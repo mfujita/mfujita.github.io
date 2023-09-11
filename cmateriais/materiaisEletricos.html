@@ -58,22 +58,22 @@
             .largura { width: 400px; height: 80px;}
             .altura { height: 500px; }
             .altura4 { height: 1000px;}
-            .largura6 { width: 400px; height: 1000px;}
+            .largura7 { width: 400px; height: auto;}
+            .largura12 { height: 800px;}
             .altura13 { height: 1000px;}
         }
 
         @media (max-width: 768px) {
             .slider { width: 100%; overflow-x: scroll; }
             .largura { width: 768px; height: 80px; }
-            .largura6 { width: 768px; height: 700px;}
+            .largura4 { width: 768px; height: 700px;}
             .altura4 { height: 800px;}
+            .largura12 { height: 400px;}
             .altura13 { height: 400px;}
         }
 
         @media (min-width: 769px) {
-            
             .slider { overflow-x: none; }
-            
         }
     </style>
 </head>
@@ -332,7 +332,7 @@
 
         <caption>
             <figcaption class="text-center mb-4">Tabela I - Valores de resistência à tração em função da posição cristalina</figcaption>
-            <table class="mx-auto">
+            <table class="table mx-auto">
                 <tr><th class="text-center pr-4">Posição cristalina</th> <th class="px-4">Resistência à tração kgf/mm<sup>2</sup> </th></tr>
                 <tr><td class="">na aresta</td>                  <td class="text-center">14,60</td></tr>
                 <tr><td class="">na diagonal de superfícies</td> <td class="text-center">20,15</td></tr>
@@ -899,12 +899,18 @@
                 </div>                
             </div>
          </caption>
+         <p></p>
         
         <h5>Tensão de contato e força termoelétrica nos metais</h5>
         <p>Dois metais diferentes, em contato, criam uma diferença de potencial entre suas superficies. Origina-se a diferença de potencial entre os metais, devido às diferenças entre as nuvens de elétrons presentes num e noutro, originando condições de pressão interna também diversas. A tensão de contato entre dois metais, que designaremos genericamente por A e B, é dada pela Eq. (17).</p>
         <p>Seu valor varia, de acordo com os metais em contato, de 1/10 até alguns volts. Em um circuito fechado de dois metais, a soma do potencial de contato, estando ambos os pontos de contato à mesma temperatura, é igual a zero.</p>
         <p>O caso se torna diferente se as temperaturas não são iguais. Chamando essas T1 e T2, a tensão de contato entre dois metais, designados genericamente por A e B, será</p>
-        <p><img src="equacao17.jpg" alt="equação 17"> (17)</p>
+        <div class="slider">
+            <div class="largura12">
+                <img src="equacao17.jpg" alt="equação 17"> 
+            </div>
+        </div>
+        <p>(17)</p>
         
         <p>K = constante de Boltzmann,</p>
         <p>T = temperatura em graus absolutos,</p>
@@ -1106,7 +1112,7 @@
 
         <p style="text-indent:0%">e, em alguns casos, o ferro, cujas características e ligas mais importantes serão abordadas em seguida.</p>
         <p>No presente capítulo nos propomos a tecer alguns comentários sobre os metais de uso mais frequente, recomendando-se acompanhar a análise com a tabela de características deste capítulo. Isso porque, em última análise, o uso é sempre justificado pelas propriedades que o material apresenta, e o seu conhecimento levará também a concluir sobre a conveniência de sua substituição por outro.</p>
-        <p>O cobre (Cu) e suas ligas</p>
+        <p class="noindent">O cobre (Cu) e suas ligas</p>
         <p>O cobre apresenta as vantagens a seguir, que lhe garantem posição de destaque entre os metais condutores.</p>
         <p>a) Pequena resistividade. Somente à prata tem valor inferior, porém o seu elevado preço não permite o seu uso em quantidades grandes.</p>
         <p>b) Características mecânicas favoráveis.</p>
@@ -1262,7 +1268,7 @@
         <caption>
             <figcaption class="text-center mb-4">Tabela VII - Características de ligas de alumínio para laminação e extrusão</figcaption>
             <div class="slider">
-                <div class="largura6">                    
+                <div class="largura7">                    
                     <table class="table">
                         <tr>
                             <th class="text-center">Característica física</th>
@@ -1887,8 +1893,8 @@
             <tr><th>Característica</th> <th>Unidades</th>                       <th>Cobre</th> <th>Prata</th></tr>
             <tr><td>Ponto de fusão</td>       <td>°C</td>                       <td>1084</td>  <td>960</td></tr>
             <tr><td>Ponto de volatização</td> <td>°C</td>                       <td>2360</td>  <td>1980</td></tr>
-            <tr><td>Densidade</td>            <td>g/cm3</td>                    <td>8,9</td>   <td>10,50</td></tr>
-            <tr><td>Condutividade</td>        <td>m/&Omega; mm<sup>2</sup></td> <td>58</td>    <td>62,5</td></tr>
+            <tr><td>Densidade</td>            <td>g/cm<sup>3</sup></td>         <td>8,9</td>   <td>10,50</td></tr>
+            <tr><td>Condutividade</td>        <td>m/&Omega;.mm<sup>2</sup></td> <td>58</td>    <td>62,5</td></tr>
         </table>
 
         <h5>Matérias-primas</h5>
