@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Servidor web Arduino</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Programando o Arduino para a Internet das Coisas</h1>
+
+        <p>A Internet das Coisas (IoT &minus; Internet of Things) consiste na ideia de que dispositivos irão se conectar entre si através da Internet, numa quantidade extraordinária e crescente. Isso não significa simplesmente mais e mais computadores e seus navegadores, mas coisas reais, como celulares, tablets, eletrodomésticos, roupas, etc. Estão incluídos todos os tipos de automação residencial, desde iluminação e eletrodomésticos inteligentes até sistemas de segurança, e mesmo dispositivos para alimentação de animais de estimação operados pela Internet, assim como muitos projetos de pouca aplicação prática, porém muito divertidos.</p>
+
+        <p class="uppercase">OBJETIVOS DE APRENDIZAGEM</p>
+
+        <ul>
+            <li>Conhecer brevemente as possibilidades da Internet das Coisas.</li>
+            <li>Conhecer um pouco sobre HTTP e HTML.</li>            
+            <li>Aprender a usar um shield de Ethernet permitindo que o Arduino funcione como servidor de web.</li>            
+            <li>Aprender a realizar requisições de web para acessar serviços disponíveis na Internet.</li>
+        </ul>
+
+        <p>Os Arduinos são utilizados no desenvolvimento de muitos projetos IoT. Para isso, usamos um Arduino especializado ou um shield apropriado para fornecer os recursos de rede que nos permitirão medir e controlar coisas através de uma rede local ou da Internet. A interface com a rede deve ter a forma de uma conexão Ethernet (com cabo) ou WiFi (sem fio).</p>
+        <p>Neste capítulo, iremos explorar um Arduino acoplado a um shield de Ethernet, assim como a placa WiFi ESP8266 que está se tornando cada vez mais popular e que pode ser programada com a linguagem C do Arduino a um baixíssimo custo (veja a Figura 10.1). No primeiro caso, também poderíamos usar a placa EtherTen da Freetronics que contém um Arduino em combinação com um shield de Ethernet.</p>
+        <p>Usando dois tipos de placa, você aprenderá a colocar em funcionamento um servidor local de web e a realizar requisições de web<a href="#NT1"><sup>[NT1]</sup></a> para acessar serviços disponíveis na Internet. Finalmente, descreveremos brevemente outras opções, como o Particle Photon e o Arduino Yun.</p>
+
+        <caption>
+            <p class="legenda">Da esquerda para a direita: placas Arduino Uno com shield de Ethernet; EtherTen e Node MCU ESP8266.</p>
+            <figcaption><img class="d-block mx-auto mb-5 img-fluid" src="img/fig01.jpg" alt="fig01"></figcaption>
+        </caption>
+
+        <h2>Comunicação com servidores de web</h2>
+        <p>Antes de ver como o Arduino lida com a comunicação entre um navegador e o servidor de web que está sendo acessado, você precisa conhecer algumas coisas sobre HyperText Transfer Protocol (HTTP) e HyperText Markup Language (HTML).</p>
+
+        <h3>HTTP</h3>
+        <p>O HyperText Transfer Protocol (HTTP) é o método usado pelos navegadores de web para se comunicar com um servidor de web.</p>
+        <p>Quando você visita uma página da web, o navegador que você está utilizando envia uma requisição ao servidor onde se encontra aquela página dizendo o que você deseja. Na maioria das vezes, essa requisição solicita simplesmente o conteúdo de uma página descrita em HTML. O servidor de web está sempre prestando atenção a essas requisições e, quando recebe uma, ele a processa. Nesse caso simples, o processamento da requisição significa enviar ao Arduino a página HTML que foi especificada por você no sketch e requisitada pelo Arduino durante a execução do sketch.</p>
+
+        <h3>HTML</h3>
+        <p>A HyperText Markup Language (HTML) é uma maneira de definir um texto qualquer juntamente com informações de formatação. Dessa forma, o texto ficará visualmente bem apresentado quando o navegador o exibir. Por exemplo, o seguinte código em HTML produz a página mostrada na Figura 10.2:</p>
+
+        <pre>&lt;html&gt;
+&lt;body&gt;        
+&lt;h1&gt;Programming Arduino&lt;/h1&gt;        
+&lt;p&gt;A book about programming Arduino&lt;/p&gt;        
+&lt;/body&gt;        
+&lt;/html&gt;</pre>
+
+        <p>A HTML contém o que denominamos tags (etiquetas ou rótulos). As tags ocorrem aos pares: uma tag de abertura e a respectiva tag de fechamento. Uma tag de abertura consiste em um &lt; seguido de um nome de tag e terminando com um &gt;, como, por exemplo, &lt;html&gt;. A correspondente tag de fechamento é similar, exceto que tem um / após o &lt;. No exemplo anterior, a primeira tag de abertura é &lt;html&gt; e a correspondente tag de fechamento é &lt;/html&gt;. Entre uma tag de abertura e a de fechamento podem ocorrer outros pares de tags. É o que ocorre no exemplo acima com a tag de abertura denominada &lt;body&gt; (corpo) e a respectiva tag de fechamento &lt;/body&gt;. Todas as páginas da web devem começar com essas tags e as correspondentes tags de fechamento podem ser vistas no fim do arquivo. Observe que você deve colocar as tags na ordem correta de modo que, por exemplo, a tag body seja fechada antes da tag html.</p>
+        <p>Agora, examinemos um trecho em particular desse código HTML, aquele localizado no meio e envolvido pelas tags h1 e p. Essas tags especificam o conteúdo que será exibido e como isso se dará.</p>
+        <p>As tags h1 definem um cabeçalho (header) de nível 1. O efeito é que o texto contido entre elas será exibido em negrito, com tamanho grande (nível 1). As tags p são tags de parágrafo, fazendo com que todo o texto contido entre elas seja exibido em uma nova linha.</p>
+        <p>Isso mal arranha a superfície dos tópicos de HTML. Há muitos recursos de Internet e livros que estão disponíveis para quem quiser aprender HTML.</p>
+
+        <caption>
+            <p class="legenda">Um exemplo de HTML.</p>
+            <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig02.jpg" alt="fig02"></figcaption>
+        </caption>
+
+        <h2>Arduino Uno como servidor de web</h2>
+        <p>No nosso primeiro exemplo de sketch, usaremos um Arduino, um shield de Ethernet e a sua rede local para construir um servidor simples de web. Definitivamente, ele não tem o porte de um servidor Google, mas permitirá que, usando o navegador do seu computador, você envie uma requisição de web para o Arduino e veja os resultados no navegador. Uma alternativa ao uso de um Arduino Uno e de um shield de Ethernet é a placa EtherTen da Freetronics, a qual combina ambos, o Uno e o shield, em uma única placa compatível com o Uno e o shield.</p>
+        <p>Antes de carregar (upload) o sketch 10-01, você talvez tenha que fazer uma alteração no sketch. Se você olhar na parte inicial do sketch, você verá as seguintes linhas especificando o endereço mac que será atribuído ao Arduino:</p>
+
+        <pre>byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };</pre>
+
+        <p>O endereço mac do Arduino deve ser diferente dos endereços mac de todos os demais dispositivos que estiverem conectados à sua rede.</p>
+        <p>Usando o cabo USB, conecte o Arduino ao seu computador e carregue (upload) o sketch. Agora, você pode desconectar o cabo USB. Em seguida, conecte o cabo da fonte de alimentação elétrica e o cabo Ethernet.</p>
+        <p>Abra o Monitor Serial no IDE do Arduino e você verá algo como o mostrado na Figura 10.3, na qual se vê o endereço de IP que foi atribuído ao Arduino por sua rede.<a href="#NT2" class="link-underline-light" ><sup>[NT2]</sup></a> Usando seu navegador, vá para esse endereço de IP e você deverá ver uma página de web como a mostrada na Figura 10.4.</p>
+
+        <caption>
+            <p class="legenda">Encontrando o endereço IP de seu Arduino.</p>
+            <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig03.jpg" alt="fig03"></figcaption>
+        </caption>
+
+        <caption>
+            <p class="legenda">Um exemplo simples de servidor com Arduino.</p>
+            <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig04.jpg" alt="fig04"></figcaption>
+        </caption>
+
+        <p>A listagem do sketch 10-01 é a seguinte:</p>
+        <pre>//sketch 10-01 Exemplo de servidor simples
+
+#include &lt;SPI.h&gt;
+#include &lt;Ethernet.h&gt;
+// O endereço MAC deve ser único. O seguinte deve funcionar:
+
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+EthernetServer server(80);
+
+void setup()
+{
+    Serial.begin(9600);
+    Ethernet.begin(mac);
+    server.begin();
+    Serial.print("Server started on: ");    
+    Serial.println(Ethernet.localIP());     //"Servidor começou em: valor do IP atribuído pela rede local     
+}
+
+void loop()
+{
+    // aguardando pela chegada de requisições de clientes
+    EthernetClient client = server.available();
+    if (client)
+    {
+    while (client.connected())
+    {
+        // envie uma resposta com um cabeçalho HTTP padrão
+        client.println("HTTP/1.1 200 OK");
+        client.println("Content-Type: text/html");
+        client.println();
+        // envie o corpo (body) do arquivo HTML
+        client.println("&lt;html&gt;&lt;body&gt;");
+        client.println("&lt;h1&gt;Arduino Server&lt;/h1&gt;");
+        client.print("&lt;p&gt;A0=");
+        client.print(analogRead(0));
+        client.println("&lt;/p&gt;");
+        client.print("&lt;p&gt;millis=");
+        client.print(millis());
+        client.println("&lt;/p&gt;");
+        client.println("&lt;/body&gt;&lt;/html&gt;");
+        client.stop();
+    }
+
+    delay(1);
+    }        
+}</pre>
+
+        <p>Assim como aconteceu com a biblioteca LCD discutida no Capítulo 9, uma biblioteca padrão do Arduino se encarrega da interface com o shield de Ethernet.</p>
+        <p>A função setup inicializa a biblioteca Ethernet usando o endereço de mac que você definiu antes no sketch. Após a conexão ser estabelecida e sua rede ter recebido um endereço IP, esse endereço será exibido no Monitor Serial, como mostrado na Figura 10.3, de modo que você poderá saber para onde apontar seu navegador.</p>
+        <p>A função loop é responsável por atender a todas as requisições que estão chegando ao servidor oriundas de um navegador. Se uma requisição estiver esperando por uma resposta, então quando chamarmos server.available (servidor disponível) teremos como retorno um cliente. Um cliente é um objeto. Você aprenderá mais sobre o que isso significa no Capítulo 11. Por enquanto, tudo que você precisa saber é se há um cliente esperando (teste feito pelo primeiro comando if). A seguir, chamando cliente.connected, você poderá determinar se ele está conectado ao servidor de web.</p>
+        <p>As três próximas linhas de código enviam um cabeçalho (header) de retorno. Isso simplesmente diz ao navegador qual é o tipo de conteúdo que será exibido. Nesse caso, o navegador mostrará um conteúdo HTML.</p>
+        <p>Depois do envio do cabeçalho, tudo o que falta fazer é enviar o código HTML ao navegador. Isso deve incluir as tags &lt;html&gt; e &lt;body&gt; e também as tags de cabeçalho &lt;h1&gt; e de parágrafo &lt;p&gt;, que exibirão o valor da entrada analógica A0 e o valor retornado pela função millis. Este valor é o número de milissegundos decorridos desde que o Arduino foi inicializado (reset) pela última vez.</p>
+        <p>Finalmente, client.stop (cliente parar) diz ao navegador que a mensagem está completa e o navegador exibirá a página.</p>
+        <p>Em uma seção mais adiante neste mesmo capítulo, repetiremos esse exemplo usando WiFi e uma placa ESP8266 em vez da placa Ethernet.</p>
+
+        <h2>Arduino controlado pela web</h2>
+        <p>Este segundo exemplo de como usar um shield de Ethernet permite que os pinos digitais 3 a 7 sejam ligados ou desligados usando um formulário web (web form).</p>
+        <p>Diferentemente do servidor simples do exemplo anterior, agora você deverá encontrar um modo de passar ao Arduino o que você deseja fazer com seus pinos, ligando ou desligando-os.</p>
+        <p>Para isso, usaremos o método denominado posting data (postagem de dados) que é parte do protocolo padrão HTTP. Para que esse método funcione, você deverá construir o mecanismo de posting dentro da especificação HTML, de modo que o Arduino envie dados do tipo HTML ao navegador para que este exiba os dados na forma de um formulário (form). O formulário (mostrado na Figura 10.5) permite, para cada pino, que você faça uma escolha entre ligado (On) e desligado (Off). A seguir, essas escolhas são confirmadas através de um botão de Atualização (Update) para que os valores selecionados sejam enviados ao Arduino.</p>
+        <p>Quando o botão de Update é pressionado, uma segunda requisição é enviada ao Arduino. Ela será como a primeira requisição, exceto que a requisição conterá parâmetros com os valores On ou Off (1 ou 0) de cada pino.</p>
+
+        <caption>
+            <p class="legenda">A interface de web para os pinos de saída (Output Pins) do Arduino.</p>
+            <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig05.jpg" alt="fig05"></figcaption>
+        </caption>
+
+        <p>Conceitualmente, um parâmetro de requisição é similar a um parâmetro de função. Um parâmetro de função permite que você passe informação a uma função, tal como o número de vezes que um LED deve piscar. Um parâmetro de requisição permite que você passe dados ao Arduino, que fará o processamento da requisição. Quando o Arduino recebe a requisição de web, ele pode extrair os valores On ou Off (1 ou 0) de cada pino e atualizar as saídas desses pinos a partir dos parâmetros da requisição</p>
+        <p>O código para o sketch do segundo exemplo é o seguinte:</p>
+
+        <pre>// sketch 10-02 Pinos de Internet
+#include &lt;SPI.h&gt;
+#include &lt;Ethernet.h&gt;
+// O endereço MAC deve ser único. O seguinte deve funcionar:
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+EthernetServer server(80);
+int numPins = 5;
+int pins[] = {3, 4, 5, 6, 7}; // pinos de saída
+int pinState[] = {0, 0, 0, 0, 0}; // estado de cada pino
+char line1[100];
+
+void setup()
+{
+    for (int i = 0; i < numPins; i++)
+    {
+        pinMode(pins[i], OUTPUT);
+    }
+    Serial.begin(9600);
+    Ethernet.begin(mac);
+    server.begin();
+    Serial.print("Server started on: ");
+    Serial.println(Ethernet.localIP());
+}
+
+void loop()
+{
+    EthernetClient client = server.available();
+    if (client)
+    {
+        while (client.connected())
+        {
+        readHeader(client);
+        if (! pageNameIs("/"))
+        {
+            client.stop();
+            return;
+        }
+        client.println("HTTP/1.1 200 OK");
+        client.println("Content-Type: text/html");
+        client.println();
+        // envie o corpo (body)do arquivo HTML ao navegador
+        client.println("&lt;html&gt;&lt;body&gt;");
+        client.println("&lt;h1&gt;Output Pins&lt;/h1&gt;");
+        client.println("&lt;form method='GET'&gt;");
+        setValuesFromParams();
+        setPinStates();
+    
+        for (int i = 0; i < numPins; i++)
+        {
+            writeHTMLforPin(client, i);
+        }
+        client.println("&lt;input type='submit' value='Update'/&gt;");
+        client.println("&lt;/form&gt;");
+        client.println("&lt;/body&gt;&lt;/html&gt;");
+        client.stop();
+        }
+    }
+}
+
+void writeHTMLforPin(EthernetClient client, int i)
+{
+    client.print("&lt;p&gt;D");
+    client.print(pins[i]);
+    client.print("&lt;select name='");
+    client.print(i);
+    client.println("'&gt;");
+    client.print("&lt;option value='0'");
+    if (pinState[i] == 0)
+    {
+        client.print(" selected");
+    }
+    client.println("&gt;Off&lt;/option&gt;");
+    client.print("&lt;option value='1'");
+    if (pinState[i] == 1)
+    {
+        client.print(" selected");
+    }
+    client.println("&gt;On&lt;/option&gt;");
+    client.println("&lt;/select&gt;&lt;/p&gt;");
+}
+
+void setPinStates()
+{
+    for (int i = 0; i < numPins; i++)
+    {
+    digitalWrite(pins[i], pinState[i]);
+    }
+}
+
+void setValuesFromParams()
+{
+    for (int i = 0; i < numPins; i++)
+    {
+        pinState[i] = valueOfParam(i + '0');
+    }
+}
+
+void readHeader(EthernetClient client)
+{
+    // leia primeira linha do cabeçalho
+    char ch;
+    int i = 0;
+    while (ch != '\n')
+    {
+        if (client.available())
+        {
+        ch = client.read();
+        line1[i] = ch;
+        i ++;
+        }
+    }
+    line1[i] = '\0';
+    Serial.println(line1);
+
+
+boolean pageNameIs(char* name)
+{
+    // o nome da página começa com o caractere da
+    // posição 4 e termina com espaço
+    int i = 4;
+    char ch = line1[i];
+    while (ch != ' ' && ch != '\n' && ch != '?')
+    {
+        if (name[i-4] != line1[i])
+        {
+            return false;
+        }
+        i++;
+        ch = line1[i];
+    }
+    return true;
+}
+
+int valueOfParam(char param)
+{
+    for (int i = 0; i < strlen(line1); i++)
+    {
+        if (line1[i] == param && line1[i+1] == '=')
+        {
+            return (line1[i+2] - '0');
+        }
+    }
+    return 0;
+}</pre>
+
+            <p>O sketch usa dois arrays para controlar os pinos. O primeiro, pins (pinos), simplesmente especifica quais são os pinos usados. O array pinState contém o estado de cada pino: 1 ou 0 (On ou Off).</p>
+            <p>Para obter a informação vinda do formulário do navegador, especificando quais pinos devem estar ligados e quais devem estar desligados, é necessário ler o cabeçalho enviado pelo navegador. De fato, tudo o que você precisa está contido na primeira linha do cabeçalho. Você usará um array de caracteres line1 para guardar a primeira linha do cabeçalho.</p>
+            <p>Quando o usuário está na página exibida pelo navegador, com as opções de saída, e clica no botão de Update (Atualização), o formulário é submetido e enviado ao shield de Ethernet. O URL da página exibida será algo como o seguinte:</p>
+
+            <pre>http://192.168.1.30/?0=1&1=1&2=0&3=0&4=0</pre>
+
+            <p>Os parâmetros da requisição estão após o ? e cada um está separado por um &. O valor do primeiro parâmetro (0=1) significa que o primeiro pino do array (pins[0]) deve ter o valor 1. Se você fosse olhar a primeira linha do cabeçalho, você veria esses mesmos parâmetros:</p>
+
+            <pre>GET /?0=1&1=1&2=0&3=0&4=0 HTTP/1.1</pre>
+
+            <p>Na frente dos parâmetros está a expressão GET /. Isso especifica qual página foi solicitada pelo navegador. Nesse caso, a página solicitada é a página raiz (/).</p>
+            <p>Dentro do loop, a função readHeader (ler cabeçalho) é chamada para ler a primeira linha do cabeçalho. A seguir, você usa a função pageNameIs (o nome da página é) para verificar se a página solicitada é a página raiz (/).</p>
+            <p>Agora, o sketch gera o cabeçalho e a parte inicial do formulário HTML que será exibido. Antes de escrever o código HTML para cada pino, o sketch chama a função setValuesFromParams (ajuste os valores a partir dos parâmetros) para ler os valores a partir dos parâmetros da requisição. Para isso, cada um dos parâmetros é lido e o valor correspondente é colocado no array pinStates, com os estados dos pinos. A seguir, esse array é usado para definir os valores das saídas dos pinos antes que a função writeHTMLforPin (escrever HTML para o pino) seja chamada para cada um dos pinos. Essa função gera uma lista com as opções feitas para cada pino. Essa lista precisa ser construída passo a passo. O comando if assegura que as opções apropriadas sejam selecionadas.</p>
+            <p>As funções readHeader, pageNameIs e valueOfParam (valor do parâmetro) são funções de uso geral, úteis para você usar em seus próprios sketches.</p>
+            <p>Você poderá usar o seu multímetro como fez no Capítulo 6 para verificar se os pinos estão realmente sendo ligados ou desligados. Se você estiver com vontade de fazer coisas mais arrojadas, você poderá ainda conectar LEDs ou relés aos pinos e, desse modo, controlar coisas.</p>
+
+            <h2>Servidor de Web com Node MCU</h2>
+
+            <p>O ESP8266 é um sistema WiFi com microcontrolador contido em um chip, isto é, um único chip que faz praticamente tudo que faz um Arduino Uno equipado com um shield WiFi. Ele contém alguns pinos GPIO<a href="#NT3"><sup>[NT3]</sup></a> e uma entrada analógica que pode ser programada a partir do IDE do Arduino, como se fosse uma placa oficial de Arduino.</p>
+            <p>As duas placas ou módulos mais comuns que contém o chip ESP8266 são as mostradas na Figura 10.6. São a ESP01 e a Node MCU.<a href="#NT4"><sup>[NT4]</sup></a></p>        
+            <p>A placa ESP01 é extremamente diminuta contendo apenas dois pinos GPIO. Para ser programada, ela necessita de um programador USB-serial em separado. Por outro lado, a placa Node MCU, vista à direita na Figura 10.6, contém um chip de interface USB-serial que é usado na programação da placa, como no Arduino Uno. Essa placa também contém um conjunto bem escolhido de pinos GPIO. Para quem quer iniciar, a placa Node MCU é a melhor escolha.</p>
+            <p>O chip ESP8266 dessas placas tem aproximadamente 36KB de espaço de memória que pode ser usado em sketches (bem mais do que os 2KB do Arduino Uno). O chip ESP8266 em si não tem memória flash interna, mas a placa pode oferecer 4MB para o armazenamento de programas, como no caso do Node MCU.</p>
+
+            <caption>
+                <p class="legenda">Placas com o chip ESP8266: ESP01 (esquerda) e Node MCU (direita).</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig06.jpg" alt="fig06"></figcaption>
+            </caption>
+
+            <p>As placas com o chip ESP8266 não são placas Arduino oficiais. Na realidade, a placa Node MCU vem com seu próprio firmware que usa a linguagem Lua de programação em vez da linguagem C do Arduino. Entretanto, graças aos esforços de Sandeep Mistry, esse firmware pode ser substituído e a placa pode ser programada de modo praticamente igual ao de qualquer outra placa Arduino. Todas as placas com ESP8266 podem ser conectadas à porta serial de um Arduino e usadas para proporcionar uma interface Wifi. Por outro lado, como as placas são capazes de substituir um Arduino, faz sentido usá-las plenamente e não só para a conexão WiFi.</p>
+            <p>O primeiro passo para usar uma placa Node MCU é atualizar o software do seu IDE de Arduino de modo que esse novo tipo de placa seja incluído. Você deve estar usando no mínimo o IDE Arduino 1.8 para que as instruções abaixo funcionem corretamente</p>
+            <p>No menu do IDE, comece abrindo a janela Arquivo e clicando em Preferências. Então, no campo "URLs Adicionais para Gerenciadores de Placas", insira o endereço de URL <span class="text-break">http://arduino.esp8266.com/stable/package_esp8266com_index.json</span> (Figura 10.7) e dê um OK.</p>
+            <p>A seguir, abra a janela Ferramentas e leve o cursor até a opção “Placa: aqui estará o nome de uma placa”. À direita, aparecerá a lista com as opções disponíveis de placa. No topo da lista, clique em “Gerenciador de Placas”. Uma janela será aberta com diversos itens. Percorra os itens até encontrar o nome “esp8266 by ESP8266 Community”. Clique no botão Instalar. Feche o “Gerenciador de Placas”.</p>
+            <p>A partir de agora, quando você voltar a consultar a lista de placas disponíveis, você verá novas opções de placa relacionadas com o ESP8266. Em particular, interessa-nos as opções “Node MCU0.9” e “NodeMCU 1.0”. Quando você comprar sua placa com ESP8266, você deverá verificar de que tipo ela é.</p>
+
+            <caption>
+                <p class="legenda">Inserindo o URL no Gerenciador de Placas para as placas com ESP8266.</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig07.jpg" alt="07"></figcaption>
+            </caption>
+
+            <p>Antes de começar a programar a placa Node MCU, você deverá instalar os drivers do chip USB-serial usado nessa placa. Esse chip é diferente do chip USB-serial do Arduino Uno. Portanto, você deverá baixar e instalar os drivers específicos dessa placa a partir de https://github.com/nodemcu/nodemcu-devkit/tree/master/Drivers e executar em seguida o programa de instalação.</p>
+            <p>Agora, você poderá programar o ESP8266. Selecione o tipo de placa e a porta de comunicação exatamente como você faria com qualquer Arduino. Entretanto, há algumas diferenças que você deve conhecer.</p>
+            <ul>
+                <li>Algumas vezes (nem sempre) você deverá manter pressionado o botão “Flash” antes de ligar a alimentação elétrica e somente liberá-lo alguns segundos depois. Faça isso se o carregamento (Upload) de seu sketch falhar.</li>
+                <li>Os pinos digitais D0 a D8 da placa devem ser usados com o “D” na frente deles. Por exemplo, pinMode(D0,OUTPUT). No caso de placas Arduino oficiais, esse “D” é opcional.</li>
+                <li>A placa Node MCU tem um LED semelhante ao LED “L” do Arduino Uno, mas ele está no pino D0 e não no D13. Portanto, o sketch Blink (Pisca-Pisca) deverá ser modificado para que o pino utilizado seja D0 e não D13.</li>
+                <li>Quando você usa uma placa Arduino oficial, não importa em que ordem você definiu as suas funções. No entanto, quando você usa uma placa Node MCU, as funções usadas nos sketches devem estar definidas antes que sejam chamadas pela primeira vez.</li>
+            </ul>
+
+            <p>A biblioteca Node MCU é um pouco diferente da biblioteca padrão Arduino Ethernet. O Sketch 10-03 é uma repetição do servidor simples de web da Figura 10.4, mas usa uma placa Node MCU no lugar de um Arduino e um shield Ethernet.</p>
+            <pre>// sketch 10-03. Servidor básico de web com Node MCU
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;WiFiClient.h&gt;
+#include &lt;ESP8266WebServer.h&gt;
+#include &lt;ESP8266mDNS.h&gt;
+
+const char* ssid = "my-network-name"; //"nome de minha rede"
+const char* password = "my_password"; //"minha senha"
+
+ESP8266WebServer server(80);
+
+void handleRoot()
+{
+    String message = "&lt;html&gt;&lt;body&gt;\n";
+    message += "&lt;h1&gt;Arduino Server&lt;/h1&gt;\n";
+    message += "&lt;p&gt;A0=";
+    message += analogRead(A0);
+    message += "&lt;/p&gt;";
+    message += "&lt;p&gt;millis=";
+    message += millis();
+    message += "&lt;/p&gt;";
+    message += "&lt;/html&gt;&lt;/body&gt;\n";
+    server.send(200, "text/html", message);
+}
+
+void connectToWiFi()
+{
+    Serial.print("\n\nConnecting to ");
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi connected");
+    Serial.print("IP address: ");
+    Serial.println(WiFi.localIP());
+}
+
+void setup()
+{
+    Serial.begin(115200);
+    connectToWiFi();
+    server.on("/", handleRoot);
+    server.begin();
+    Serial.println("HTTP server started"); //"Servidor HTTP iniciou"
+}
+
+void loop()
+{
+    server.handleClient();
+}</pre>
+
+            <p>Na realidade, o código para a placa Node MCU é estruturado de modo diferente do código para o Arduino e o shield Ethernet, que foi visto no sketch 10-01. Enquanto no código para o Arduino e o shield Ethernet tínhamos um endereço MAC (Mac address), aqui no código para a Node MCU temos constantes para ssid (nome da rede wireless) e password (senha). Em vez de criar uma variável do tipo Ethernet, criamos uma variável do tipo ESP8266WebServer.</p>
+            <p>A função handleRoot (manipula raiz) demonstra um recurso interessante da biblioteca ESP8266, que consiste na capacidade de definir os assim denominados handlers para cada uma das diferentes páginas que o servidor está atendendo. Se você examinar a função setup, você verá o comando server.on(“/”, handleRoot). Esse comando informa o servidor de que, quando houver uma requisição para a página raiz (/), a função handleRoot (manipula raiz) deve ser chamada para gerar o código HTML necessário para aquela página e encaminhar esse código de volta ao navegador.</p>
+            <p>Essa função usa a classe String do Arduino para gerar uma linha de cada vez do código HTML. Observe que a classe String pode exigir bastante espaço de memória. Assim, se você começar a obter erros inesperados no seu código, então é possível que a classe String seja a responsável. Para strings pequenas, como nesse exemplo, o uso de memória está adequado, mas para strings de maior comprimento talvez seja melhor usar um buffer de caracteres, como será mostrado mais adiante no sketch 10-04.</p>
+            <p>O processo de criar a conexão WiFi, juntamente com o código para exibir o endereço IP do servidor no Monitor Serial, está todo contido na função connectToWiFi (conectar com WiFi). Observe que a taxa de baud (baud rate) para esse sketch está definida em 115200. Desse modo, para ver as mensagens no Monitor Serial, será necessário ajustar a taxa de baud para o mesmo valor. Para isso, escolha Ferramentas no menu e clique após em “Monitor Serial”. Na janela, escolha o valor 115200 na lista que aparece quando você clica no canto inferior direito.</p>
+            <p>A função setup chama connectToWiFi, ativa o handleRoot e inicia a execução do código do servidor server.begin. O laço em loop simplesmente chama handleClient no servidor para esperar e atender as requisições que estiverem chegando.</p>
+
+            <h2>Node MCU controlado pela web</h2>
+            <p> Arduino controlado pela web do sketch 10-02 pode ser adaptado para trabalhar com uma placa Node MCU. O resultado é o sketch 10-04. Para testá-lo, você pode conectar LEDs aos pinos usados ou medir suas tensões em volts usando um multímetro.</p>
+
+            <pre>// sketch 10-04. Node MCU Controlado pela web
+#include &lt;ESP8266WiFi.h&gt;
+#include &lt;WiFiClient.h&gt;
+#include &lt;ESP8266WebServer.h&gt;
+#include &lt;ESP8266mDNS.h&gt;
+
+const char* ssid = "my-network-name"; // "nome de minha rede"
+const char* password = "my_password"; // "minha senha"
+int numPins = 5;
+char* pinNames[] = {"D5", "D6", "D7", "D8", "D9"};
+int pins[] = {D5, D6, D7, D8, D9};
+int pinState[] = {0, 0, 0, 0, 0};
+
+ESP8266WebServer server(80);
+
+void setPinStates()
+{
+    for (int i = 0; i &lt; numPins; i++)
+    {
+        digitalWrite(pins[i], pinState[i]);
+    }
+}
+
+void setValuesFromParams()
+{
+    for (int i = 0; i &lt; numPins; i++)
+    {
+        pinState[i] = server.arg(i).toInt();
+    }
+}
+
+void connectToWiFi()
+{
+    Serial.print("\n\nConnecting to "); / Conectando-se com
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi connected"); //WiFi conectado
+    Serial.print("IP address: "); //Endereço de IP
+    Serial.println(WiFi.localIP());
+}
+
+void handleRoot()
+{
+    char buff[1000];
+    Serial.println("Got a Request"); // Recebi uma requisição
+    setValuesFromParams();
+    setPinStates();
+    strcat(buff, "&lt;html&gt;&lt;body&gt;\n");
+    strcat(buff, "&lt;h1&gt;Output Pins&lt;/h1&gt;\n");
+    strcat(buff, "&lt;form method='GET'&gt;\n");
+    for (int i = 0; i &lt; numPins; i++)
+    {
+        strcat(buff, "&lt;p&gt;");
+        strcat(buff, pinNames[i]);
+        strcat(buff, " &lt;select name='");
+        char indexStr[10];
+        sprintf(indexStr, "%d", i);
+        strcat(buff, indexStr);
+        strcat(buff, "'&gt;&lt;option value='0'");
+        if (pinState[i] == 0)
+        {
+            strcat(buff, " selected");
+        }
+        strcat(buff, "&gt;Off&lt;/option&gt;");
+        strcat(buff, "&lt;option value='1'");
+        if (pinState[i] == 1)
+        {
+            strcat(buff, " selected");
+        }
+        strcat(buff, "&gt;On&lt;/option&gt;&lt;/select&gt;&lt;/p&gt;\n");
+    }
+    strcat(buff, "&lt;input type='submit' value='Update'/&gt;");
+    strcat(buff, "&lt;/form&gt;&lt;/html&gt;&lt;/body&gt;\n");
+    server.send(200, "text/html", buff);
+}
+
+void setup()
+{
+    for (int i = 0; i &lt; numPins; i++)
+    {
+        pinMode(pins[i], OUTPUT);
+    }
+    Serial.begin(115200);
+    connectToWiFi();
+    server.on("/", handleRoot);
+    server.begin();
+    Serial.println("HTTP server started"); \\ Servidor HTTP iniciado
+    }
+    
+void loop()
+{
+    server.handleClient();
+}</pre>
+
+            <p>Esse sketch está estruturado de forma semelhante ao sketch 10-02 para Arduino. Ele usa um conjunto diferente de pinos e tem um array de strings com os nomes dos pinos que serão mostrados na página de web gerada. As funções utilitárias pageNameIs e valueOfParam, que foram escritas para fazer verificações na página que está sendo acessada e obter parâmetros isolados a partir da requisição, não são necessárias na versão com ESP8266 já que a biblioteca manipula as requisições pelo nome da página usando o mecanismo server.on (servidor ativo) e permite acesso direto aos valores dos parâmetros usando server.arg(i), onde i é o índice da localização do parâmetro (argumento). Na realidade, a função arg inclui também opções para recuperar parâmetros a partir de seus nomes. Você poderá encontrar mais informações sobre esse assunto acessando a documentação que se encontra em: <span class="text-break">http://links2004.github.io/Arduino/d3/d58/class_e_s_p8266_web_server.html</span></span>.</p>
+            <p>Neste caso, a função handleRoot deve construir uma string muito maior para conter o código HTML que será enviado de volta ao cliente. Em vez de usar a classe String, aqui veremos uma abordagem diferente. Usando um buffer de strings (buff) e a função strcat em C, iremos concatenar uma serie de pequenas strings e formar uma string principal que aumenta de tamanho aos poucos e termina com \0. Quando for necessário acrescentar um número, como o valor do pino, usaremos um segundo buffer de strings (indexStr). O número é inserido (escrito) nesse buffer usando a função sprintf que “imprime” o número no buffer. A seguir, esse buffer é concatenado com buff.</p>
+            <p>Quando usamos a biblioteca Arduino Ethernet, todo esse trabalho com buffer é desnecessário já que é possível construir a resposta para o navegador escrevendo uma linha de cada vez. Isso torna desnecessário construir a mensagem por inteiro antes de enviá-la ao navegador.</p>
+
+            <h2>Chamando serviços de web</h2>
+            <p>Até agora, em todos os exemplos deste capítulo, construímos servidores de web usando um Arduino ou uma placa Node MCU. Por outro lado, o que deveríamos fazer se quiséssemos que a placa funcionasse como um navegador de web, enviando requisições a um servidor de web que estivesse em algum lugar da Internet?</p>
+            <p>Por exemplo, poderíamos fazer a placa medir temperaturas a intervalos regulares e, em seguida, enviar essas leituras a um serviço de web. Nas duas próximas seções, usaremos um Arduino e uma placa Node MCU para aprender a enviar requisições a um serviço de web. Nós utilizaremos um serviço muito popular denominado IFTTT (If This Than That). Quando o IFTTT receber uma requisição (o gatilho), ele responderá executando uma ação que, neste caso, será enviar um e-mail com o valor da leitura feita no pino A0.</p>
+            <p>Independentemente de você usar um Arduino ou uma placa Node MCU, você deverá em primeiro lugar se cadastrar no IFTTT criando uma conta para você. O IFTTT tem uma interface de fácil uso que é, em sua maior parte, autoexplicativa. Para se cadastrar, entre no site ifttt.com, clique em Sign up que está no canto superior direito e siga as instruções. Na próxima vez que você visitar o site, clique direto em Sign in.</p>
+            <p>A seguir, você deverá criar o que se denomina um applet.<a href="#NT5"><sup>[NT5]</sup></a></p>
+            <p>Para criar um applet, comece clicando no seu nome de usuário (user name) que está visível no canto superior direito. Entre as opções, escolha “New Applet” (“Novo Applet”). Aparecerá uma página onde consta o texto “if + this than that” (“se + isto então aquilo”). Clique em cima de “+ this” (“+ isto”). Aparecerá uma página com os logotipos de todos os “serviços” que podem ser usados para você criar o disparo ou gatilho (trigger) do applet. Nós usaremos o serviço Maker. Para selecioná-lo, escreva Maker na caixa de texto e você verá que os serviços disponíveis se reduzirão a poucas opções. Escolha Makerwebhooks. Surgirá uma nova página com opções, na qual você deve clicar em “Receive a web request” (“Receba uma requisição de web”). Na página seguinte, você definirá uma mensagem que, quando for enviada ao serviço IFTTT, servirá de gatilho para o applet ser executado. Ver Figura 10.8<a href="#NT7"><sup>[NT6]</sup></a>.</p>
+
+            <caption>
+                <p class="legenda"> Completando o campo “Event Name” do gatilho.</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig08.jpg" alt="fig08"></figcaption>
+            </caption>
+
+            <p>Aqui, entraremos com o texto “arduino_spoke” (“arduino_falou”) no campo “Event Name” (“Nome do Evento”). Em seguida, você irá efetivar o gatilho clicando em “Create Trigger” (“Crie Gatilho”).</p>
+            <p>No próximo passo, você deverá definir a ação, isto é, especificar o que deverá acontecer quando o applet for disparado pelo gatilho. Neste exemplo, faremos o serviço IFTTT enviar-nos um e-mail, mas você poderia especificar outro serviço que realizasse ações diferentes. Por exemplo, o IFTTT poderia enviar um Tweet, atualizar o estado do Facebook ou realizar alguma outra ação escolhida entre muitas. Mais tarde, após fazer esse primeiro applet funcionar, você poderá testar outros tipos de respostas. Para definir a ação, você deverá clicar em “+ that” (“+ aquilo”) dentro do texto que aparecerá. Em seguida, localize e escolha o serviço contendo a ação 'Email'. Entre as opções que surgirão, clique na ação “Send me an e-mail” (“Envie-me um e-mail”). Você será conduzido ao formulário mostrado na Figura 10.9.</p>
+
+            <caption>
+                <p class="legenda"> Completando os campos da ação.</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig09.jpg" alt="fig09"></figcaption>
+            </caption>
+
+            <p>Mais adiante, quando for efetivada a criação dessa ação, o campo temporariamente ‘EventName’ será automaticamente atualizado para ‘arduino_spoke’. Você pode deixar os campos como estão ou usar esse formulário para individualizar o e-mail que lhe será enviado. Mais tarde, se for necessário, você sempre poderá voltar aqui para modificar a ação. Finalmente, clique no botão “Create Action” (“Criar Ação”) para efetivar a criação. Aparecerá uma página mostrando a composição do applet. Você poderá voltar atrás (clicando em “Back”) para alterar alguma coisa ou finalizar a criação do applet clicando em “Finish” (Finalizar). A página que surge mostra o applet ativado (“ON”) e um botão (“Check now”) que você pode acionar para verificar o funcionamento do applet. Agora, seu novo applet está ativado e esperando que chegue uma mensagem (arduino_spoke) vinda de seu Arduino ou placa Node MCU.</p>
+            <p>O passo final que você deve dar é conseguir a “chave” (“Key”) do gatilho (“trigger”) do applet para que somente você possa usá-lo. Para isso, clique no seu nome de usuário no canto superior direito e selecione “Services” (“Serviços”). Aparecerão os serviços que você está utilizando até agora em seus applets. Escolha “Maker Webhooks” e clique em “Settings”. Na página que surgirá, haverá diversas informações e particularmente há um URL que especifica a página da web onde se encontra a chave. Acesse essa página e você verá algo semelhante ao que está mostrado na Figura 10.10. Analise cuidadosamente seus conteúdos.<a href="#NT7"><sup>[NT7]</sup></a></p>
+            <p>O importante aqui está no texto que começa por “Your key is:” (“Sua chave é:”). Anote o valor e mantenha de forma segura essa chave pessoal porque mais tarde você deverá inseri-la no sketch do Arduino ou da placa NodeMCU.</p>
+
+            <caption>
+                <p class="legenda">Encontrando a chave (key) no serviço Maker (M).</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig10.jpg" alt="fig10"></figcaption>
+            </caption>
+
+            <h2>Arduino Uno e IFTTT</h2>
+            <p>Vamos começar com o sketch que o Arduino e o shield de Ethernet executam para enviar uma requisição ao IFTTT. Veja o sketch 10-05 a seguir.</p>
+
+            <pre>// sketch 10-05 IFTTT
+#include &lt;SPI.h&gt;
+#include &lt;Ethernet.h&gt;
+
+// O endereço MAC deve ser único. O seguinte deve funcionar:
+byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+
+// Aqui você deve substituir o valor de key pelo
+// valor que você obteve e anotou do IFTTT:
+const char* key = "c1AsQq_qsQVTSO5-6NASqg";
+const char* host = "maker.ifttt.com";
+const int httpPort = 80;
+const long sendPeriod = 60000L; // 1 minuto
+EthernetClient client;
+
+void setup()
+{
+    Serial.begin(9600);
+    Ethernet.begin(mac);
+}
+
+void sendToIFTTT(int reading)
+{
+    client.stop();
+    Serial.print("connecting to "); //"conectando-se com "
+    Serial.println(host);
+    if (!client.connect(host, httpPort))
+    {
+        Serial.println("connection failed"); //"a conexão falhou"
+        return;
+    }
+    String url = "/trigger/arduino_spoke/with/key/";
+    url += key;
+    url += "?value1=" + String(reading);
+    String req = String("GET ") + url + " HTTP/1.1\r\n" +
+    "Host: " + host + "\r\n" +
+    "Connection: close\r\n\r\n";
+    Serial.println(req);
+    client.print(req);
+}
+
+void loop()
+{
+    static long lastReadingTime = 0;
+    long now = millis();
+    if (now &gt; lastReadingTime + sendPeriod)
+    {
+        int reading = analogRead(A0);
+        sendToIFTTT(reading);
+        lastReadingTime = now;
+    }
+    if (client.available())
+    {
+        Serial.write(client.read());
+    }
+}</pre>
+
+            <p>Troque o valor da constante key (chave) pelo valor da chave que você obteve no serviço Maker do IFTTT anteriormente (veja Figura 10.10). A constante sendPeriod (envia período) define o intervalo ou período de tempo que deve existir entre os envios de requisições web ao IFTTT.</p>
+            <p>A variável client (cliente) refere-se à classe EthernetClient (Cliente Ethernet) em vez da classe EthernetServer (Servidor Ethernet) que usamos em exemplos anteriores porque o Arduino está funcionando como um cliente web neste exemplo.</p>
+            <p>A cada minuto, a função loop chama a função sendToIFTTT (enviar ao IFTTT), enviando o valor lido na entrada A0 como parâmetro. A seguir, a função loop verifica se há alguma resposta do servidor e, em caso afirmativo, faz a sua exibição. Isso não é rigorosamente necessário, mas efetivamente fornece um feedback valioso que é mostrado no Monitor Serial de modo que você pode saber se está acontecendo alguma coisa de errado.</p>
+            <p>A função sendToIFTTT chama primeiro client.stop() para encerrar qualquer transação anterior que estivesse ocorrendo antes de se conectar com o servidor hospedeiro e construir a string url que será enviada ao servidor. Essa string incluirá o parâmetro reading (valor de leitura na entrada A0) como um dos parâmetros da requisição. A url também inclui key (a chave) e o nome de evento arduino_spoke (arduino_falou) que você definiu no serviço IFTTT.</p>
+
+            <h2>Placa Node MCU ESP8266 e IFTTT</h2>
+            <p>O sketch 10-06 usa a placa Node MCU como variante para enviar gatilhos (triggers) ao IFTTT. O sketch pode ser visto a seguir:</p>
+            <pre>// sketch 10_06
+#include &lt;ESP8266WiFi.h&gt;
+
+const char* ssid = "my-network-name"; // "nome da minha rede"
+const char* password = "my_password"; // "minha senha"
+//Chave que deve ser trocada pela sua:
+const char* key = "c1AsQq_qsQVTSO5-6NASqg";
+const char* host = "maker.ifttt.com";
+const int httpPort = 80;
+const long sendPeriod = 60000L; // 1 minuto
+WiFiClient client;
+
+void connectToWiFi()
+{
+    Serial.print("\n\nConnecting to "); //"Conectando-se com"
+    Serial.println(ssid);
+    WiFi.begin(ssid, password);
+    while (WiFi.status() != WL_CONNECTED)
+    {
+        delay(500);
+        Serial.print(".");
+    }
+    Serial.println("\nWiFi connected"); // "WiFi conectado"
+    Serial.print("IP address: "); // "Endereço de IP"
+    Serial.println(WiFi.localIP());
+}
+
+void sendToIFTTT(int reading)
+{
+    Serial.print("connecting to "); //"Conectando-se com"
+    Serial.println(host);
+    if (!client.connect(host, httpPort))
+    {
+        Serial.println("connection failed"); //"Conexão falhou"
+        return;
+    }
+    
+    String url = "/trigger/arduino_spoke/with/key/";
+    url += key;
+    url += "?value1=" + String(reading);
+    String req = String("GET ") + url + " HTTP/1.1\r\n" +
+    "Host: " + host + "\r\n" +
+    "Connection: close\r\n\r\n";
+    Serial.println(req);
+    client.print(req);
+}
+
+void setup()
+{
+    Serial.begin(115200);
+    connectToWiFi();
+}
+
+void loop()
+{
+    static long lastReadingTime = 0;
+    long now = millis();
+    if (now &gt; lastReadingTime + sendPeriod)
+    {
+        int reading = analogRead(A0);
+        sendToIFTTT(reading);
+        lastReadingTime = now;
+    }
+    if (client.available())
+    {
+        Serial.write(client.read());
+    }
+}</pre>
+
+            <p>Fora o trecho do sketch onde se faz a conexão WiFi, em vez de Ethernet, e o uso da classe WiFiClient, em vez de EthernetClient, o código é quase o mesmo.</p>
+
+            <h2>Outras opções de IoT</h2>
+            <p>O Arduino Yun e a placa Particle Photon (Figura 10.11) são placas alternativas para o desenvolvimento de projetos envolvendo a Internet das Coisas (IoT).</p>
+
+            <h3>Arduino Yun</h3>
+            <p>O Arduino Yun é a placa Arduino oficial para ser usada na Internet das Coisas (IoT). Ela contém muitos recursos interessantes incluindo módulos separados de WiFi sem fio e Ethernet com fio, além de conectores USB. Realmente, é como se fosse um Arduino Uno combinado com um módulo WiFi estilo ESP8266. A comunicação entre essas partes, Arduino e WiFi, é feita usando um software denominado “bridge” (ponte).</p>
+            <p>O primeiro passo para usar um Yun é conectá-lo à sua rede WiFi. Após isso, você poderá programá-lo usando o IDE de Arduino sem necessidade do cabo USB para conectá-lo ao computador que está fazendo a programação. A placa poderá ser programada por meio da conexão WiFi. A placa também contém um conector USB como o Arduino Uno.</p>
+            <p>Todos esses recursos têm um custo. A placa é proibitivamente cara para muitos projetos IoT, especialmente quando comparada com uma placa baseada no ESP8266.</p>
+
+            <caption>
+                <p class="legenda">Arduino Yun (esquerda) e Particle Photon (direita).</p>
+                <figcaption><img class="d-block mx-auto mb-5 img-fluid"src="img/fig11.jpg" alt="fig11"></figcaption>
+            </caption>
+
+            <h3>Particle Photon</h3>
+            <p>A placa Photon da Particle e sua antecessora Spark Core constituem uma plataforma não oficial do tipo Arduino para uso na IoT. A conexão é apenas por WiFi, permitindo programação sem fio por meio de um IDE baseado na web. Esse IDE não é o de Arduino, mas é muito semelhante.</p>
+            <p>A placa Photon é programada com a linguagem C do Arduino com algumas extensões que permitem seu entrosamento perfeito com o sistema IoT da Particle, liberando você de fazer uma boa parte da programação trabalhosa de rede que você viu neste capítulo.</p>
+            <p>A placa Photon é mais cara que as placas baseadas em ESP8266, mas seu sistema interno de IoT e a possibilidade de programação sem fio fazem dela uma ótima opção para projetos IoT baseados em WiFi.</p>
+            <p>Se você quiser aprender mais sobre a Photon, você poderá consultar meu livro Getting Started with the Photon (Maker Media, 2015).</p>
+
+            <h2>Conclusão</h2>
+            <p>Depois de usar shields e as respectivas bibliotecas nos dois últimos capítulos, chegou o momento de você examinar os recursos que permitem escrever bibliotecas e aprender a escrever as suas próprias bibliotecas.</p>
+
+            <hr>
+            <p id="NT1">[NT1]: Quando você acessa alguma página da Web usando um navegador (browser), o seu navegador internamente envia uma requisição (request) utilizando algum protocolo de comunicação (HTTP é um dos mais usados) para detalhar o que deseja do servidor.</p>
+            <p id="NT2">[NT2]: Se isso não ocorrer, experimente inicializar o Arduino apertando o botão de RESET no canto esquerdo superior próximo do conector USB. Não há necessidade de carregar novamente (Upload) o sketch.</p>
+            <p id="NT3">[NT3]: General Purpose Input Output, ou seja, Entrada e Saída de Propósito Geral.</p>
+            <p id="NT4">[NT4]: As placas com ESP8266 estão se tornando bem populares e a disponibilidade de novas placas com recursos diversificados tem crescido.</p>
+            <p id="NT5">[NT5]: Um applet pode ser entendido como um pequeno programa que ao receber um “disparo” passa a executar alguma “ação”. O serviço IFTTT aloja inúmeros applets criados por seus usuários. Esses applets são disparados quando o site IFTTT é acessado com um endereço URL próprio para cada applet. No nosso caso, o applet que você criará terá como condição de disparo o recebimento de uma mensagem com um certo conteúdo (arduino_spoke – arduino_falou) e a ação resultante será o envio de uma mensagem ao endereço de e-mail registrado por você ao se cadastrar no IFTTT. Tanto o gatilho de disparo como a ação a ser executada pelo applet são definidos por você durante a criação do applet. Essa composição do tipo “se isso então aquilo = IF This Than That” dá nome ao serviço de web IFTTT.</p>
+            <p id="NT6">[NT6]: As ilustrações relativas ao serviço IFTTT neste livro podem ser ligeiramente diferentes das que você verá no site. A razão é que o serviço IFTTT sofreu atualizações após o lançamento da edição original deste livro em inglês.</p>
+            <p id="NT7">[NT7]: Observando a figura, vemos que o valor da chave fez parte da URL que acabamos de utilizar para acessar a página. Você verá também outras informações, particularmente a que indica como disparar um evento (“to trigger an event”). Para isso, basta acessar a página indicada pela string que começa com https. O trecho “{event}” deverá ser substituído por “arduino_spoke”. Se você fizer isso usando um navegador, você acionará o applet no serviço IFTTT que responderá enviando-lhe um e-mail. É essa mesma string que o Arduino ou a placa Node MCU deverão construir e enviar para disparar o applet. Para isso, esse envio será feito pelo Arduino ou a placa Node MCU através de uma requisição com POST ou GET de acordo com o protocolo HTPP.</p>
+        </div>
+</body>
+</html>
