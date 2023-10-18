@@ -12,6 +12,7 @@ p, ul, li { text-align: justify;  }
 .legenda {
     text-align: center;
     margin-bottom: 1px;
+    font-style: italic;
 }
 
 pre {
@@ -22,12 +23,15 @@ a {text-decoration: none;}
 
 @media (max-width: 360px) {
     .container { width: 100%; }
+    p { text-indent: 3%; }
 }
 
 @media(max-width: 768px) {
     .container { width: 100%;}
+    p { text-indent: 4%; }
 }
 
 @media (min-width: 769px) {
     .container { width: 100%;}
+    p { text-indent: 5%; }
 }
