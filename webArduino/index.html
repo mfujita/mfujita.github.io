@@ -103,26 +103,26 @@ void loop()
     EthernetClient client = server.available();
     if (client)
     {
-    while (client.connected())
-    {
-        // envie uma resposta com um cabeçalho HTTP padrão
-        client.println("HTTP/1.1 200 OK");
-        client.println("Content-Type: text/html");
-        client.println();
-        // envie o corpo (body) do arquivo HTML
-        client.println("&lt;html&gt;&lt;body&gt;");
-        client.println("&lt;h1&gt;Arduino Server&lt;/h1&gt;");
-        client.print("&lt;p&gt;A0=");
-        client.print(analogRead(0));
-        client.println("&lt;/p&gt;");
-        client.print("&lt;p&gt;millis=");
-        client.print(millis());
-        client.println("&lt;/p&gt;");
-        client.println("&lt;/body&gt;&lt;/html&gt;");
-        client.stop();
-    }
+        while (client.connected())
+        {
+            // envie uma resposta com um cabeçalho HTTP padrão
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println();
+            // envie o corpo (body) do arquivo HTML
+            client.println("&lt;html&gt;&lt;body&gt;");
+            client.println("&lt;h1&gt;Arduino Server&lt;/h1&gt;");
+            client.print("&lt;p&gt;A0=");
+            client.print(analogRead(0));
+            client.println("&lt;/p&gt;");
+            client.print("&lt;p&gt;millis=");
+            client.print(millis());
+            client.println("&lt;/p&gt;");
+            client.println("&lt;/body&gt;&lt;/html&gt;");
+            client.stop();
+        }
 
-    delay(1);
+        delay(1);
     }        
 }</pre>
 
@@ -179,30 +179,32 @@ void loop()
     {
         while (client.connected())
         {
-        readHeader(client);
-        if (! pageNameIs("/"))
-        {
+            readHeader(client);
+            if (! pageNameIs("/"))
+            {
+                client.stop();
+                return;
+            }
+
+            client.println("HTTP/1.1 200 OK");
+            client.println("Content-Type: text/html");
+            client.println();
+            // envie o corpo (body)do arquivo HTML ao navegador
+            client.println("&lt;html&gt;&lt;body&gt;");
+            client.println("&lt;h1&gt;Output Pins&lt;/h1&gt;");
+            client.println("&lt;form method='GET'&gt;");
+            setValuesFromParams();
+            setPinStates();
+        
+            for (int i = 0; i < numPins; i++)
+            {
+                writeHTMLforPin(client, i);
+            }
+
+            client.println("&lt;input type='submit' value='Update'/&gt;");
+            client.println("&lt;/form&gt;");
+            client.println("&lt;/body&gt;&lt;/html&gt;");
             client.stop();
-            return;
-        }
-        client.println("HTTP/1.1 200 OK");
-        client.println("Content-Type: text/html");
-        client.println();
-        // envie o corpo (body)do arquivo HTML ao navegador
-        client.println("&lt;html&gt;&lt;body&gt;");
-        client.println("&lt;h1&gt;Output Pins&lt;/h1&gt;");
-        client.println("&lt;form method='GET'&gt;");
-        setValuesFromParams();
-        setPinStates();
-    
-        for (int i = 0; i < numPins; i++)
-        {
-            writeHTMLforPin(client, i);
-        }
-        client.println("&lt;input type='submit' value='Update'/&gt;");
-        client.println("&lt;/form&gt;");
-        client.println("&lt;/body&gt;&lt;/html&gt;");
-        client.stop();
         }
     }
 }
@@ -233,7 +235,7 @@ void setPinStates()
 {
     for (int i = 0; i < numPins; i++)
     {
-    digitalWrite(pins[i], pinState[i]);
+        digitalWrite(pins[i], pinState[i]);
     }
 }
 
@@ -261,6 +263,7 @@ void readHeader(EthernetClient client)
     }
     line1[i] = '\0';
     Serial.println(line1);
+}
 
 
 boolean pageNameIs(char* name)
@@ -497,7 +500,7 @@ void setup()
     server.on("/", handleRoot);
     server.begin();
     Serial.println("HTTP server started"); \\ Servidor HTTP iniciado
-    }
+}
     
 void loop()
 {
@@ -705,6 +708,6 @@ void loop()
             <p id="NT5">[NT5]: Um applet pode ser entendido como um pequeno programa que ao receber um “disparo” passa a executar alguma “ação”. O serviço IFTTT aloja inúmeros applets criados por seus usuários. Esses applets são disparados quando o site IFTTT é acessado com um endereço URL próprio para cada applet. No nosso caso, o applet que você criará terá como condição de disparo o recebimento de uma mensagem com um certo conteúdo (arduino_spoke – arduino_falou) e a ação resultante será o envio de uma mensagem ao endereço de e-mail registrado por você ao se cadastrar no IFTTT. Tanto o gatilho de disparo como a ação a ser executada pelo applet são definidos por você durante a criação do applet. Essa composição do tipo “se isso então aquilo = IF This Than That” dá nome ao serviço de web IFTTT.</p>
             <p id="NT6">[NT6]: As ilustrações relativas ao serviço IFTTT neste livro podem ser ligeiramente diferentes das que você verá no site. A razão é que o serviço IFTTT sofreu atualizações após o lançamento da edição original deste livro em inglês.</p>
             <p id="NT7">[NT7]: Observando a figura, vemos que o valor da chave fez parte da URL que acabamos de utilizar para acessar a página. Você verá também outras informações, particularmente a que indica como disparar um evento (“to trigger an event”). Para isso, basta acessar a página indicada pela string que começa com https. O trecho “{event}” deverá ser substituído por “arduino_spoke”. Se você fizer isso usando um navegador, você acionará o applet no serviço IFTTT que responderá enviando-lhe um e-mail. É essa mesma string que o Arduino ou a placa Node MCU deverão construir e enviar para disparar o applet. Para isso, esse envio será feito pelo Arduino ou a placa Node MCU através de uma requisição com POST ou GET de acordo com o protocolo HTPP.</p>
-        </div>
+    </div>
 </body>
 </html>
