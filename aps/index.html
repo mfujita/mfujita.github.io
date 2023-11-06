@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise e Projeto de sistemas</title>
+    <style>
+        .box { border: 1px solid black;
+            width:80%;
+            margin: auto;
+            background-color: lightsalmon;
+            padding-left: 5%;
+            padding-right: 5%;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mapeamento de processos de negócio</h1>
+        <h3>Objetivos de aprendizagem</h3>
+        <p>Ao final deste texto, você deve apresentar os seguintes aprendizados:</p>
+        <ul>
+            <li>Identificar os processos de negócio.</li>
+            <li>Mapear os processos AS IS e elaborar o TO BE.</li>
+            <li>Aplicar corretamente a notação BPM.</li>
+        </ul>
+
+        <h3>Introdução</h3>
+        <p>Alguma vez você já se perguntou como um produto ou serviço que você consumiu foi produzido? Se sim, você tentou imaginar como foi o processo de criação? Todo produto ou serviço é criado a partir de um processo e, atualmente, as empresas se preocupam muito em entender esse processo e otimizá-los com a ajuda da tecnologia da informação.</p>
+        <p>Um processo mal elaborado pode causar grandes prejuízos, e em muitos casos, colocar em risco toda uma organização. Imagine uma fábrica de automóveis sem processos de fabricação bem definidos. Os carros produzidos por ela não seriam padronizados, e só neste quesito já geraria a insatisfação dos consumidores/clientes.</p>
+        <p>Dessa forma, identificar, mapear e otimizar processos é uma tarefa essencial. No contexto de engenharia de software, é muito importante entender sobre processos já que sistemas de informação são grandes aliados da otimização e automatização de processos. Neste texto, você vai aprender a identificar processos, entender mais sobre as técnicas AS IS e TO BE, além de estudar sobre a notação BPM.</p>
+
+        <h3>Processos de negócio</h3>
+        <p>Muito se fala em "processos de negócio", mas afinal do que se trata? Um processo de negócio pode ser definido como um conjunto de atividades/tarefas estruturadas relacionadas, cujo objetivo é produzir um serviço ou produto especifico. Este produto ou serviço pode ser então ofertado para um cliente específico ou um conjunto de clientes (PAIM et al., 2009). Imagine que você esteja comprando um carro e no momento da compra você reflita sobre todas as etapas e pessoas que foram necessárias para fazer aquele carro chegar até você. Você pode pensar somente no escopo da fábrica de carros. Já pensou quantos procedimentos, atividades e regras foram necessárias para que o produto final fosse criado com sucesso e com a qualidade esperada?</p>
+        <p>Qualquer empresa ou organização, seja ela pequena ou grande, possui um conjunto de entidades que colaboram e interagem para a entrega de algum produto/serviço. Estas entidades podem ser pessoas, sistemas, máquinas, sensores, departamentos, etc (BECKER; ROSEMANN; VON UTHMANN, 2000). Se analisarmos apenas entidades de departamentos de empresas, podemos eleger um grande número de processos de negócio que ocorrem constantemente. E dentro destas entidades, é necessário que exista um rigoroso controle e uma análise de processos de negócio para evitar esforços desnecessários ou perda de tempo com atividades recorrentes, por exemplo.</p>
+        <p>Pense que você seja comprador de uma empresa, e que ao realizar um orçamento de um determinado produto para comprar, tenha que cadastrar o fornecedor no sistema. Feito o orçamento com o fornecedor, você aceita realizar a compra do produto e então, para realizar a compra, é necessário realizar novamente o cadastro do fornecedor em outro sistema. Você já pode detectar neste processo um problema, que acaba gerando trabalho duplicado e, obviamente, gerando custos de hora/trabalho para a empresa.</p>
+        <p>Os processos de negócio são geralmente classificados em três categorias (PAIM et al., 2009). Um dos tipos de processos são os processos primário, também conhecidos como processos finalísticos. Este tipo de processo é aquele processo essencial e que representa as atividades que uma organização desempenha para cumprir sua missão. Pode-se elencar como processos primários a criação de um produto, realização de uma campanha de marketing e qualquer processo cujo receptor da saída seja o cliente do negócio.</p>
+        <p>Também existem os processos de suporte, que são aqueles processos que oferecem algum auxílio e suportam os processos primários. Ou seja, eles ou facilitam ou viabilizam um contexto para que os processos primários possam
+        ser executados. Podem exemplificar um processo de suporte com processos do RH (recursos humanos) da empresa, processos da TI da empresa (quando não atua no produto final), processos da limpeza e segurança da empresa.</p>
+        <p>Por fim, você irá conhecer os processos gerenciais, cujo tipo de processo se caracteriza como processos criados para coordenar e controlar as atividades da empresa. Neste tipo de processo, existe a preocupação em gerir melhor, garantir a execução adequada dos processos primários e secundários, traçar planos e garantir o sucesso final. Um exemplo de processos gerenciais são as atividades de gestão empresarial da área de negócio.</p>
+        <p>Muitas empresas criam muitos processos de negócio ao longo da jornada. Porém, algumas não possuem estes processos documentados e, em muitos casos, não são definidos de forma clara. Uma modelagem nitida destes processos é muito importante para que exista uma alta eficiência na empresa. Se você já viu o filme Titanic, deve saber como um iceberg é perigoso para navios que navegam em oceanos desconhecidos. Geralmente, icebergs exibem apenas 10-15% do total de sua massa. Assim, muitas empresas também possuem icebergs em seu interior, sendo estes os processos de negócio. Essas empresas, que geralmente não conhecem seus processos, possuem o que é caracterizado como visão míope. Ou seja, não possuem a visão real dos processos de negócio e não conhecem o verdadeiro estrago que um processo mal realizado pode causar para a empresa. Imagine a fábrica de carros que foi falada no início desta seção. O que aconteceria se, no processo de fabricação, fosse colocada uma peça errada no motor do carro? Muito provavelmente, depois de fabricar uma quantidade grande de automóveis, haveria a necessidade de manutenção e conserto destes automóveis, causando grandes custos para a empresa.</p>
+        <p>Desta forma, uma empresa que almeja alcançar o sucesso, bem como os analistas de negócio que desejam ajudar outras empresas a oferecer um produto de qualidade, devem entender como funciona a gestão de processos. O primeiro passo na gestão de processos é justamente identificar processos. Para identificar processos, é preciso antes saber caracterizar um processo. Veja algumas características de processos (OGUNNAIKE; RAY, 1994):</p>
+
+        <ul>
+            <li>Processo é uma cooperação de atividades e recursos distintos.</li>
+            <li>Processo é voltado à realização de um objetivo global.</li>
+            <li>Orientado para o cliente final.</li>
+            <li>Reforçado de maneira recorrente.</li>
+            <li>A um processo deve corresponder desempenho, organização e responsabilidades.</li>
+            <li>Organização estruturada.</li>
+            <li>Entradas tangíveis ou intangíveis.</li>
+            <li>Saídas como o resultado do processo.</li>
+        </ul>
+
+        <div class="box">
+            <h3>Fique atento</h3>
+            <p>Processos também podem variar de acordo com seu nivel de formalidade. Imagine que um cliente peça um desconto para comprar seu produto em grandes quantidades. Você concede este desconto para o cliente e ele realiza esta grande compra. Embora este processo não seja especificado e descrito, você cria ele de forma informal. Portanto, empresas também possuem processos informais.</p>
+        </div>
+
+        <p>Agora que você viu algumas características de um processo, já podel identificá-lo de forma mais fácil. Imagine então que irão ser identificados processos dentro de um departamento de recursos humanos de uma empresa. Podem ser feitas entrevistas e observado o dia a dia no departamento, além de eleitos alguns processos como contratação de profissionais, demissão de funcionários, realização de pagamentos de salários, etc. Todos esses processos possuem um conjunto de atividades que produzem determinado resultado final.</p>
+
+        <h3>Mapeamento de processos</h3>
+        <p>Agora que você já sabe o que é um processo e como identificá-lo, você irá conhecer mais sobre o mapeamento de processos. Serão abordadas duas técnicas, uma para mapear os processos existentes chamada de AS IS (como é agora). A outra técnica é utilizada para mapear os processos com as melhorias aplicadas, chamada de TO BE (como será).</p>
+
+        <h4>Técnica AS IS</h4>
+        <p>A técnica AS IS pode ser definida como um trabalho de levantamento e documentação da situação atual do processo, a qual é representada em fluxo ou diagrama. É durante o mapeamento dos processos com esta técnica que levantam-se também os problemas ou fragilidades, e do mesmo modo as oportunidades de melhoria do processo. A forma com que esta técnica é aplicada ocorre geralmente com pessoas que atuam diretamente no processo do dia a dia. Por exemplo, se for um processo de RH, serão realizadas entrevistas, reuniões e acompanhamento dos próprios analistas de RH para entender as etapas do processo. Em alguns casos, participam também clientes e fornecedores, embora a participação de chefias seja evitada (ao menos que seja um processo que os envolve diretamente) (ROSEMANN; BROCKE; HONORATO 2013).</p>
+        <p>Em relação à profundidade da informação, deve-se tentar extrair o máximo do ator do processo durante o mapeamento. Em alguns casos, é necessário realizar um mapeamento mais detalhado e em outros algo de maior nivel de abstração. No entanto, a técnica orienta que é importante tentar extrair as informações necessárias de uma única vez.</p>
+        <p>Alguns cuidados devem ser tomados e atividades realizadas quando forem mapear os processos com a técnica AS IS. São eles:</p>
+
+        <ul>
+            <li>Sempre fazer a documentação junto aos gestores.</li>
+            <li>Conversar com os gestores sobre as melhorias e possíveis ganhos que são esperados.</li>
+            <li>Coletar informações sobre expectativas de forma quantitativa sobre o futuro do processo.</li>
+            <li>Entender e descrever os objetivos do projeto.</li>
+            <li>Definir bem o padrão de notação para o mapeamento. Geralmente o padrão mais adotado é o BPMN (Business Process Model and Notation).</li>
+            <li>Definir as ferramentas para modelagem de processos.</li>
+            <li>Definição da equipe do projeto.</li>
+            <li>Criação de um plano de trabalho e especificação de etapas, responsáveis, recursos e cronogramas.</li>
+            <li>Definir priorizações.</li>
+            <li>Garantir os recursos necessários.</li>
+            <li>Definir como será a comunicação entre a equipe.</li>
+        </ul>
+
+        <p>Após realizadas as atividades e definidos os principais elementos listados, pode-se iniciar o mapeamento dos processos utilizando uma ou a combinação de técnicas. É possível que sejam realizadas entrevistas com as pessoas envolvidas no processo que é desejado o mapeamento. Assim, elas podem fornecer detalhes sobre o processo e responder questionamentos. Nesta técnica, é importante que seja considerada a possibilidade de se obter apenas o ponto de vista da pessoa entrevistada. Para que não exista somente um viés do ponto de vista do entrevistado, pode-se utilizar a técnica da observação. Na
+        observação, o analista acompanha o processo durante a execução para, a partir da análise, coletar informações e entender como é o fluxo de atividades. Em alguns casos, é necessário aplicar questionários para coletar mais informações sobre o processo. Neste caso, são enviadas questões para os entrevistados preencherem. Uma reunião especial da técnica é chamada de reunião JAD, na qual os representantes envolvidos com o processo fazem uma reunião em um local comum, para a criação da documentação do processo. Esta última técnica é geralmente a que oferece maior rapidez, qualidade e assertividade na documentação do processo.</p>
+        <p>Durante o mapeamento dos processos, é muito importante que exista um olhar crítico do analista, para identificar problemas que precisam ser resolvidos. Geralmente são identificados problemas relacionados com burocracia, falta de planejamento, atividades inúteis, prazos, riscos, baixo desempenho, altos custos e controles não oficiais da empresa (planilhas paralelas ao sistema).</p>
+
+        <h3>Técnica TO BE</h3>
+
+        <p>Agora que você viu como é feito o mapeamento usando a técnica AS IS, irá ser analisada outra técnica que possui como foco as melhorias que são feitas nos processos. Na técnica TO BE, são realizadas discussões, definições e documentação da situação futura do processo a qual é representada em fluxo ou diagrama (também chamado de redesenho ou modelagem). Nesta fase, participam deste trabalho as pessoas que realizam a tarefa no dia a dia, como também os chefes e outras pessoas com experiências que possam enriquecer o processo (ROSEMANN; BROCKE; HONORATO, 2013).</p>
+        <p>O mapeamento do processo pode ser feito de diversas formas. Tudo depende do cenário e do contexto da corporação. Geralmente são utilizadas as técnicas de entrevista e Reunião JAD. Na técnica TO BE, é importante destacar alguns cuidados e atividades que devem ser realizados.</p>
+        <ul>
+            <li>Trabalhe em pequenos blocos conforme a priorização.</li>
+            <li>Chame para a reunião apenas pessoas que podem melhorar o processo (evitar pessoas apegadas com o processo antigo).</li>
+            <li>Evite pensar nas restrições ou limitações, mas sim em como o processo deveria ser.</li>
+            <li>Simplifique ao máximo.</li>
+            <li>Valide com a alta gestão.</li>
+            <li>Crie um plano de implementação das mudanças.</li>
+        </ul>
+
+        <p>Para identificar locais onde podem ocorrer melhorias em processos, você pode realizar as seguintes perguntas na reunião ou para os entrevistados refletirem:</p>
+        <ul>
+            <li>O que fazemos que não apresenta valor no processo?</li>
+            <li>O que não estamos fazendo, mas apresenta valor no processo?</li>
+            <li>O que fazemos pouco mas é esperado mais?</li>
+            <li>O que fazemos demais, mas é esperado menos?</li>
+            <li>O que pode ser eliminado?</li>
+            <li>O que pode ser substituído? O que pode ser adicionado? O que pode ser melhorado? O que pode ser unificado?</li>
+            <li>O que pode ser paralelizado para executar mais rápido?</li>
+            <li>Com estes questionamentos e a reflexão de todos os envolvidos no processo, é possível que exista um ponto de melhoria para aumentar a produtividade, diminuir os custos e em muitos casos, melhorar o produto final. É importante que tudo seja devidamente documentado, que responsabilidades sejam delegadas e que seja definido um cronograma para implementação.</li>
+        </ul>
+
+        <h3>Notação BPM</h3>
+        <p>A notação BPM, ou também conhecida como BPMN, é amplamente utilizada na modelagem de processos. Ela suporta a capacidade de entendimento de processos de negócio em forma de notação gráfica e também facilita a comunicação e entendimento destes processos com uma única forma de representá-los (PIZZA, 2012). Atualmente, a BPMN está na sua versão 2.0. Nesta seção, serão apresentados alguns elementos principais desta notação. No entanto, a indicação é que você consulte a documentação/especificação completa da notação para conhecer todos os elementos que a compõem, já que em alguns casos, você pode precisar expressar o processo com mais detalhes.</p>
+
+        <div class="box">
+            <strong>Link</strong>
+            <p>Você encontra as ferramentas de criação de diagramas BPMN acessando o link ou código a seguir:</p>
+            <p>https://goo.gl/L41PEj</p>
+        </div>
+
+        <p>No BPMN o processo de negócio é representado através do encadeamento de eventos/atividades. Estes processos se ligam através de conectores (SILVER; RICHARD, 2009). A Figura 1 apresenta um exemplo de um diagrama com a notação BPMN.</p>
+
+        <figure>
+            <img src="img/fig01.jpg" alt="Figura 1">
+            <figcaption>Figura 1 - Exemplo de diagrama BPMN.</figcaption>
+        </figure>
+
+        <p>Veja que existem dois painéis que correspondem a diferentes atores do processo. Um para cliente e outro para vendedor. Em cada painel ficam todos os elementos que interagem com o representante. A especificação da BPMN define estes painéis como pools ou lanes. Em seguida, fazendo uma leitura do diagrama da esquerda para a direita, notamos um círculo simples. Ele marca o início de um processo ou sequência de tarefas. Então, uma flecha direciona para a primeira tarefa (task) "Solicita Produto". As tarefas são representadas com retângulos (BUSINESS PROCESS MODEL AND NOTATION, 2009).</p>
+
+        <p>Assim que uma tarefa é executada, o fluxo segue para a tarefa seguinte. Você pode verificar que em alguns casos o fluxo vai para um elemento, no formato de losango, chamado Gateway. Este elemento geralmente é um questionamento com duas possíveis respostas: sim e não ou verdadeiro e falso. Cada resposta direciona para um caminho diferente. No exemplo, o vendedor verifica se existe o produto solicitado no estoque. Se existe, ele retorna para o cliente. Se não existe, o processo é finalizado. Por falar em finalizado, note que o último elemento do diagrama também é um círculo. Da mesma forma que um círculo marca o início de um processo, ele também é utilizado para informar o final.</p>
+        <p>Agora que você viu um exemplo de diagrama BPMN, serão apresentadas as definições formais (BUSINESS PROCESS MODEL AND NOTATION, 2009) de cada elemento do nosso diagrama:</p>
+
+        <p>Activities/Tasl: representam um trabalho realizado em uma etapa do processo de negócio.</p>
+        <img src="img/quadradoArredondado.jpg" alt="quadrado Arredondado">
+        <p>Sequence Flow: O conector de fluxo de sequência é representado através de uma linha sólida com uma seta preenchida apontando para o destino.</p>
+        <img src="img/flecha.jpg" alt="flecha">
+        <p>Gateway: Um elemento que utiliza questionamento lógico para decisões de fluxos diferentes no processo.</p>
+        <img src="img/losango.jpg" alt="losango">
+
+
+        <p>Além dos elementos apresentados, a especificação BPMN (BUSINESS PROCESS MODEL AND NOTATION, 2009) oferece inúmeros outros elementos que permitem detalhar mais o diagrama. Por exemplo, você pode inserir símbolos nas tarefas para especificar se ela é uma tarefa manual, automática, de usuário ou um script (SILVER; RICHARD, 2009). Também existem ícones para informar tarefas de envio ou espera de mensagens. Por isso, para que você tenha mais opções na hora de criar um diagrama BPMN, é muito importante consultar a especificação atualizada.</p>
+        <div class="box">
+            <strong>Link</strong>
+            <p>Acesse o link ou código a seguir para conhecer a especificação atualizada BPMN:</p>
+            <p>https://goo.gl/8bfL98</p>
+        </div>
+
+        <div class="box">
+            <strong>Referências</strong>
+            <p>BECKER, J.; ROSEMANN, M.; VON UTHMANN, C. Guidelines of business process mode- ling. In: VAN DER AALST, W.; DESEL, J.; OBERWEIS, A. (Ed.). Business Process Management. New York: Springer Berlin Heidelberg, 2000. p. 30-49.</p>
+            <p>BUSINESS PROCESS MODEL AND NOTATION (BPMN). Specification 2.0 Vol. V0.9.14 (22 May 2009). Needham: Object Management Group, 2009.</p>
+            <p>OGUNNAIKE, B. A.; RAY, W. H. Process dynamics, modeling, and control. Oxford: Oxford University Press, 1994.</p>
+            <p>PAIM, R. et al. Gestão de Processos: pensar, agir e aprender. Porto Alegre: Bookman. 2009. 328 p.</p>
+            <p>PIZZA, W. R. A metodologia Business Process Management (BPM) e sua importância para as organizações. Monografia (Curso de Tecnologia em Processamento de Dados) - Faculdade de Tecnologia de São Paulo - FATEC SP, São Paulo, 2012.</p>
+            <p>ROSEMANN, M.; BROCKE, J. V.; HONORATO, B. Manual de BPM: gestão de processos de negócio. Porto Alegre: Bookman, 2013.</p>
+            <p>SILVER, B.; RICHARD, B. BPMN method and style. Aptos: Cody-Cassidy Press, 2009. v. 2.</p>
+            <strong>Leituras recomendadas</strong>
+            <p>DIJKMAN, R. M.; DUMAS, M.; OUYANG, O. Semantics and analysis of business process models in BPMN. Information and Software Technology, Amsterdam, v. 50, n. 12, nov. 2008. p. 1281-1294.</p>
+            <p>TACHIZAWA, T. Organização flexível: qualidade na gestão por processos. São Paulo: Atlas, 2006.</p>
+            <p>WHITE, S. A. BPMN modeling and reference guide: understanding and using BPMN. São Paulo: Future Strategies, 2008.</p>
+            <p>WHITE, S. A. Introduction to BPMN. New York: IBM Cooperation, 2004.</p>
+        </div>
+
+        <h2>Identificar requisitos funcionais</h2>
+        <h3>Objetivos de aprendizagem</h3>
+        <p>Ao final deste texto, você deve apresentar os seguintes aprendizados:</p>
+        <ul>
+            <li>Descrever o que são requisitos funcionais e suas características.</li>
+            <li>Identificar quais são os requisitos funcionais da solução que compõem o escopo.</li>
+            <li>Organizar a documentação dos requisitos funcionais.</li>
+        </ul>
+        <h3>Objetivos de aprendizagem</h3>
+        <p>Requisitos funcionais podem ser considerados, com toda a segurança, os itens mais importantes durante a modelagem de um produto de software, pois é a partir dos requisitos funcionais que todo o projeto é desenvolvido. Se um requisito funcional não estiver correto, todos os passos posteriores, como modelagem, projeto, desenvolvimento, testes e entrega irão apresentar problemas. Um requisito funcional define uma função particular de um sistema ou algum dos seus componentes; eles representam "o quê o software faz", em termos de tarefas e serviços.</p>
+        <p>Imagine que um dos requisitos de uma bola seja "a bola deve rolar". Assim, esta é uma característica muito importante para que o produto "bola", ao final do projeto, possa ser útil. Agora, imagine que na coleta de requisitos, o analista não coletou adequadamente este requisito e ao final seja criada uma bola que não role. Se o produto final não atender a esse importante requisito, ele não terá utilidade. O mesmo ocorre em produtos de software. E devido à sua complexidade e, às vezes, falta de conhecimento do usuário, erros são muito comuns na coleta de requisitos. Logo, uma atenção especial e a utilização de boas práticas são essenciais nesta etapa.</p>
+        <p>Neste texto, você irá conhecer o processo de coleta e documentação de requisitos funcionais. Irá entender o que são requisitos funcionais e suas características. Também irá identificar e documentar estes requisitos.</p>
+
+        <h2>Requisitos funcionais</h2>
+        <p>A coleta de requisitos é um processo de quatro passos, que inclui o estudo de viabilidade, recolhimento de requisitos, especificação de requisitos de software e validação de requisitos de software. Você vai entender o que significa cada um destes elementos antes de entrar nos conceitos de requisitos funcionais.</p>
+        <p>Estudo de viabilidade: quando o cliente se aproxima da organização para obter desenvolvido o produto desejado. Ele apresenta uma ideia aproximada sobre o que todas as funções que o software deve executar e quais são todos os recursos esperados. Referindo-se a essa informação, os analistas fazem um estudo detalhado sobre o sistema desejado e se sua funcionalidade é viável para desenvolver (MALL, 2014).</p>
+        <p>Esse estudo de viabilidade está focado no objetivo da organização, pois analisa se o produto de software pode ser, na prática, materializado em termos de implementação, contribuição do projeto para organização, restrições de custo conforme valores e objetivos da organização. Ele explora os aspectos técnicos do projeto e do produto, como usabilidade, capacidade de manutenção, produtividade e capacidade de integração.</p>
+        <p>O resultado desta fase deve ser um relatório de estudo de viabilidade, que deve conter comentários adequados e recomendações para o gerenciamento, e se o projeto deve ou não ser realizado.</p>
+        <p>Coleta de requisitos: se o relatório de viabilidade for positivo para o em- preendimento, a próxima fase começa com os requisitos de coleta do usuário. Analistas e engenheiros se comunicam com o cliente e os usuários finais para conhecer as suas ideias sobre o que o software deve fornecer e quais recursos eles querem que sejam incluídos.</p>
+        <h2>Validação de requisitos de software</h2>
+        <p>Depois que as especificações de requisitos são desenvolvidas, os requisitos mencionados neste documento são validados. O usuário pode solicitar uma solução ilegal, impraticável ou os especialistas podem interpretar incorretamente os requisitos. Isso resulta em um enorme aumento no custo, se não for examinado. Os requisitos podem ser verificados em relação às seguintes condições (MALL, 2014):</p>
+
+        <ul>
+            <li>Se eles podem ser, na prática, implementados.</li>
+            <li>Se eles são válidos e de acordo com a funcionalidade e o domínio do software.</li>
+            <li>Se há ambiguidades.</li>
+            <li>Se estão completos.</li>
+            <li>Se podem ser demonstrados.</li>
+        </ul>
+
+        <h2>Processo de elicitação de requisitos</h2>
+        <p>O processo de elicitação de requisitos pode ser representado pelo diagrama, conforme a Figura 2:</p>
+
+        <figure>
+            <img src="img/fig02.jpg" alt="Figura 2">
+            <figcaption>Figura 2 - Diagrama.</figcaption>
+        </figure>
+
+        <ul>
+            <li>Coleta de requisitos: os desenvolvedores discutem com o cliente e os usuários finais, e conhecem as suas expectativas sobre o software.</li>
+            <li>Organização de requisitos: os desenvolvedores priorizam e organizam os requisitos por ordem de importância, urgência e conveniência.</li>
+            <li>Negociação e discussão: se os requisitos são ambíguos ou existem alguns conflitos em requisitos de várias partes interessadas, é negociado e discutido com essas partes. Assim, os requisitos podem, então, ser priorizados e razoavelmente comprometidos, pois, provêm de vários partes interessadas. Para remover a ambiguidade e os conflitos, eles devem ser discutidos com clareza e exatidão, já que os requisitos irrealistas comprometem essa etapa.</li>
+            <li>Especificação: todos os requisitos formais e informais, funcionais e não funcionais são documentados e disponibilizados para o próximo processamento da fase.</li>
+        </ul>
+
+        <h2>Técnicas de elicitação de requisitos</h2>
+        <p>A elicitação de requisitos é o processo para descobrir os requisitos para um sistema de software pretendido, comunicando-se com o cliente, usuários finais, usuários do sistema e outros que tenham participação no desenvolvimento do sistema de software.</p>
+        <p>Existem várias maneiras de descobrir os requisitos (SCHACH, 2009):</p>
+        <ul>
+            <li>Entrevistas: as entrevistas são um meio forte para cobrar os requisitos. A organização pode realizar vários tipos de entrevistas, tais como:</li>
+            <ul>
+                <li>Entrevistas estruturadas (fechadas), em que cada informação é única para coletar dados, sendo decidida com antecedência, porque elas seguem um padrão e a questão de discussão firmemente.</li>
+                <li>Entrevistas não estruturadas (abertas), em que a informação a reunir não é decidida com antecedência, mais flexível e menos tendenciosa.</li>
+                <li>Entrevistas orais.</li>
+                <li>Entrevistas escritas.</li>
+                <li>Entrevistas individuais que são realizadas entre duas pessoas em todo o país.</li>
+            </ul>
+            <li>Pesquisa: a organização pode realizar pesquisas entre várias partes interessadas, que consultarão sobre as expectativas e os requisitos do próximo sistema.</li>
+            <li>Questionário: o documento, com um conjunto pré-definido de questões objetivas, é entregue a todas as partes interessadas para ser respondido, assim, posteriormente, serão coletadas e compiladas as respostas. Uma lacuna dessa técnica é, se uma opção para algum problema não for mencionada no questionário, a questão pode ser deixada sem supervisão. Análise de tarefas: a equipe de engenheiros e desenvolvedores pode analisar a necessidade da operação do novo sistema. Se o cliente já tiver algum software para executar determinada operação, ele é estudado e os requisitos do sistema proposto são coletados.</li>
+            <li>Análise de domínio: todo o software cai em alguma categoria de domínio. As pessoas experientes no domínio podem ser de grande ajuda para analisar os requisitos gerais e específicos.</li>
+            <li>Debate: um debate informal é realizado entre as várias partes interessadas e todos os seus insumos são registrados para análise adicional de requisitos.</li>
+            <li>Prototipagem: é a construção de uma interface de usuário, sem adicionar funcionalidades detalhadas para que o usuário interprete os recursos</li>
+        </ul>
+
+    </div>
+</body>
+</html>
