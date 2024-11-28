@@ -1,0 +1,62 @@
+https://appinventor.mit.edu/explore/ai2/photo-booth-app
+https://ai2.appinventor.mit.edu/reference/other/extensions.html
+
+Introdução
+O resultado deste app permite tirar fotos que são usadas em um Canvas. Ao tirar a foto, são exibidos 4 canvas.
+
+Criando a interface do usuário
+Componente|Renomeado para|Objetivo|Propriedades
+//HorizontalArrangement|AjusteHorizontal1|Conteiner para agrupar 3 botões|Width: Fill parent
+
+TableArrangement|tabelaPrincipal|Conteiner para organizar botões com as 2 funcionalides.|Width: Fill parent
+Button|btnAjuda|Exibir ajuda|Imagem:help.png
+Button|btnFoto|Tira foto|Text: Foto. Width: Fill parent
+Button|btnCamera|Tira a foto|Image:camera.png. Text: none.
+
+A aparência dos elementos dentro do AjusteHorizontal1 é:
+fig1
+
+Abaixo do AjusteHorizontal1 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal2. Inclua outros elementos dentro do AjusteHorizontal2:
+Componente|Renomeado para|Objetivo|Propriedades
+AjusteHorizonta1|AjusteHorizontal2|Conteiner para agrupar 3 elementos|Width: Fill parent
+Canvas|Canvas1|Exibe a image da câmera|Imagem de fundo: photobooth.png. Width: 50%
+Canvas|Canvas2|Exibe a image da câmera|Imagem de fundo: photobooth.png. Width: 50%
+
+Abaixo do AjusteHorizontal2 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal3. Inclua outros elementos dentro do AjusteHorizontal3:
+Componente|Renomeado para|Objetivo|Propriedades
+AjusteHorizontal|AjusteHorizontal3|Conteiner para agrupar 3 elementos|Width: Fill parent
+Canvas|Canvas3|Exibe a image da câmera|Imagem de fundo: photobooth.png. Width: Fill parent
+Label|lblPreenche2|Usado como separador|Text: none. Width: 5
+Canvas|Canvas4|Exibe a image da câmera|Imagem de fundo: photobooth.png. Width: Fill parent
+
+Abaixo do AjusteHorizontal3 arraste e solte o VerticalArrangement renomeando para AjusteVertical1. Inclua outros elementos dentro do AjusteVertical1:
+Componente|Renomeado para|Objetivo|Propriedades
+TextBox|txtFotoCompartilhar|Exibe o nome da imagem|Width: Fill parent. Hint: Compartilhar. Enable: false
+Button|btnCompartilharImagem|Inicia o processo de compartilhamento|Width: Fill parent. Texto: Compartilhar
+
+São necessários mais 3 elementos do tipo não-visíveis:
+Camera
+Notifier
+Sharing
+[fig4.jpg]
+
+Mude para o Blocks:
+Clique no botão "Tirar foto" para tirar a foto.
+Enquanto salva as imagens, elas serão passadas
+do Canvas1 até o Canvas4. Clique na imagem para
+selecioná-la e depois em "Compartilhar" para
+enviar através do e-mail.
+[fig5.jpg]
+
+
+Tirando foto e salvando no Canvas Pegue o elemento que armazena números.
+Cada foto é associada a um Canvas. A primeira foto vai para Canvas1, a segunda para o Canvas2 e assim por diante. Será usado um contador que é uma variável global para que foto seja atribuída a seu respectivo Canvas.
+
+No menu dos blocks, procure por "Variables", arraste solte "Initilize global". Modifique o campo "name" para "CanvasNum".
+Em Math → Pegue o elemento que armazena números.
+[fig6.jpg]
+
+Iniciando a câmera.
+A mesma ação acontece ao clicar nos botões btnFoto e btnCamera. Os botões terão esta lógica:
+[fig7.jpg]
+
