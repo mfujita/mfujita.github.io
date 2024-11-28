@@ -4,122 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cabine de fotos</title>
+	<style>
+		body { font-family: Cambria Math, Arial; }
+		h1 { margin: 3%; margin-bottom: 0; text-shadow: 2px 2px 5px red; }
+		.container { width: 94%; margin: auto; }
+		p { margin: 3%; }
+		img { border: 1px solid red; }
+		hr { border-width:5px; color: black; background-color: black; }
+	</style>
 </head>
 <body>
-    <h1>Cabine de fotos</h1>    
+	<h1>Cabine de fotos</h1>
+	<hr>
+	<div class="container">
+  
 
-    <h3>Introdução</h3>
-    <p>O resultado deste app permite tirar fotos que são usadas em um Canvas. Ao tirar a foto são exibidos 4 canvas.</p>
+		<h3>Introdução</h3>
+		<p>O resultado deste app permite tirar fotos que são usadas em um Canvas. Ao tirar a foto são exibidos 4 canvas.</p>
 
-    <h3>Criando a interface do usuário</h3>
-    <table border="1">
-        <tr><th>Componente</th> <th>Renomeado para</th> <th>Objetivo</th> <th>Propriedades</th></tr>
-        <tr><td>HorizontalArrangement</td> <td>AjusteHorizontal1</td> <td>Conteiner para agrupar 3 botões</td> <td>Width: Fill parent</td></tr>
-        <tr><td>TableArrangement</td> <td>tabelaPrincipal</td> <td>Conteiner para organizar botões com as 2 funcionalides.</td> <td>Width: Fill parent</td></tr>
-        <tr><td>Button</td> <td>btnAjuda</td> <td>Exibir ajuda</td> <td>Imagem:help.png</td></tr>
-        <tr><td>Button</td> <td>btnFoto</td> <td>Tira foto</td> <td>Text: Foto. Width: Fill parent</td></tr>
-        <tr><td>Button</td> <td>btnCamera</td> <td>Tira a foto</td> <td>Image:camera.png. Text: none.</td></tr>
-    </table>
+		<h3>Criando a interface do usuário</h3>
+		<table border="1">
+			<tr><th>Componente</th> <th>Renomeado para</th> <th>Objetivo</th> <th>Propriedades</th></tr>
+			<tr><td>HorizontalArrangement</td> <td>AjusteHorizontal1</td> <td>Conteiner para agrupar 3 botões</td> <td>Width: Fill parent</td></tr>
+			<tr><td>TableArrangement</td> <td>tabelaPrincipal</td> <td>Conteiner para organizar botões com as 2 funcionalides.</td> <td>Width: Fill parent</td></tr>
+			<tr><td>Button</td> <td>btnAjuda</td> <td>Exibir ajuda</td> <td>Imagem:help.png</td></tr>
+			<tr><td>Button</td> <td>btnFoto</td> <td>Tira foto</td> <td>Text: Foto. Width: Fill parent</td></tr>
+			<tr><td>Button</td> <td>btnCamera</td> <td>Tira foto</td> <td>Image:camera.png. Text: none.</td></tr>
+		</table>
 
-    <p>A aparência dos elementos dentro do AjusteHorizontal1 é:</p>
-    <img src="fig1.jpg" alt="figura 1" width="100%">
+		<p>A aparência dos elementos dentro do AjusteHorizontal1 é:</p>
+		<img src="fig1.jpg" alt="figura 1" width="100%">
 
-    <p>Abaixo do AjusteHorizontal1 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal2. Inclua outros elementos dentro do AjusteHorizontal2:</p>
-    <table border="1">
-        <tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
-        <tr><td>AjusteHorizonta1</td> <td>AjusteHorizontal2</td> <td>Conteiner para agrupar 3 elementos</td> <td>Width: Fill parent</td></tr>
-        <tr><td>Canvas</td> <td>Canvas1</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: 50%</td></tr>
-        <tr><td>Canvas</td> <td>Canvas2</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: 50%</td></tr>
-    </table>
+		<p>Abaixo do AjusteHorizontal1 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal2. Inclua outros elementos dentro do AjusteHorizontal2:</p>
+		<table border="1">
+			<tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
+			<tr><td>AjusteHorizonta1</td> <td>AjusteHorizontal2</td> <td>Conteiner para agrupar 3 elementos</td> <td>Width: Fill parent</td></tr>
+			<tr><td>Canvas</td> <td>Canvas1</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: 50%</td></tr>
+			<tr><td>Canvas</td> <td>Canvas2</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: 50%</td></tr>
+		</table>
 
-    <br>
-    <img src="fig2.jpg" alt="figura 2">
+		<br>
+		<img src="fig2.jpg" alt="figura 2">
 
-    <p>Abaixo do AjusteHorizontal2 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal3. Inclua outros elementos dentro do AjusteHorizontal3:</p>
-    <table border="1">
-        <tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
-        <tr><td>AjusteHorizontal</td> <td>AjusteHorizontal3</td> <td>Conteiner para agrupar 3 elementos</td> <td>Width: Fill parent</td></tr>
-        <tr><td>Canvas</td> <td>Canvas3</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: Fill parent</td></tr>
-        <tr><td>Label</td> <td>lblPreenche2</td> <td>Usado como separador</td> <td>Text: none. Width: 5</td></tr>
-        <tr><td>Canvas</td> <td>Canvas4</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: Fill parent</td></tr>
-    </table>
+		<p>Abaixo do AjusteHorizontal2 arraste e solte outro HorizontalArrangement renomeando para AjusteHorizontal3. Inclua outros elementos dentro do AjusteHorizontal3:</p>
+		<table border="1">
+			<tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
+			<tr><td>AjusteHorizontal</td> <td>AjusteHorizontal3</td> <td>Conteiner para agrupar 3 elementos</td> <td>Width: Fill parent</td></tr>
+			<tr><td>Canvas</td> <td>Canvas3</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: Fill parent</td></tr>
+			<tr><td>Label</td> <td>lblPreenche2</td> <td>Usado como separador</td> <td>Text: none. Width: 5</td></tr>
+			<tr><td>Canvas</td> <td>Canvas4</td> <td>Exibe a image da câmera</td> <td>Imagem de fundo: photobooth.png. Width: Fill parent</td></tr>
+		</table>
 
-    <p>Abaixo do AjusteHorizontal3 arraste e solte o VerticalArrangement renomeando para AjusteVertical1. Inclua outros elementos dentro do AjusteVertical1:</p>
-    <table border="1">
-        <tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
-        <tr><td>TextBox</td> <td>txtFotoCompartilhar</td> <td>Exibe o nome da imagem</td> <td>Width: Fill parent. Hint: Compartilhar. Enable: false</td></tr>
-        <tr><td>Button</td> <td>btnCompartilharImagem</td> <td>Inicia o processo de compartilhamento</td> <td>Width: Fill parent. Texto: Compartilhar</td></tr>
-    </table>
-    <br>
-    <img src="fig3.jpg" alt="figura 3">
+		<p>Abaixo do AjusteHorizontal3 arraste e solte o VerticalArrangement renomeando para AjusteVertical1. Inclua outros elementos dentro do AjusteVertical1:</p>
+		<table border="1">
+			<tr><td>Componente</td> <td>Renomeado para</td> <td>Objetivo</td> <td>Propriedades</td></tr>
+			<tr><td>TextBox</td> <td>txtFotoCompartilhar</td> <td>Exibe o nome da imagem</td> <td>Width: Fill parent. Hint: Compartilhar. Enable: false</td></tr>
+			<tr><td>Button</td> <td>btnCompartilharImagem</td> <td>Inicia o processo de compartilhamento</td> <td>Width: Fill parent. Texto: Compartilhar</td></tr>
+		</table>
+		<br>
+		<img src="fig3.jpg" alt="figura 3">
 
-    <p>São necessários mais 3 elementos do tipo não-visíveis:</p>
-    <ul>
-        <li>Camera</li>
-        <li>Notifier</li>
-        <li>Sharing</li>
-    </ul>
+		<p>São necessários mais 3 elementos do tipo não-visíveis:</p>
+		<ul>
+			<li>Camera</li>
+			<li>Notifier</li>
+			<li>Sharing</li>
+		</ul>
 
-    <img src="fig4.jpg" alt="figura 4">
+		<img src="fig4.jpg" alt="figura 4">
 
+		<h3>Mude para o Blocks:</h3>
+		<p>Clique no botão "Tirar foto" para tirar a foto. Enquanto salva as imagens, elas serão passadas do Canvas1 até o Canvas4. Clique na imagem para selecioná-la e depois em "Compartilhar" para enviar através do e-mail.</p>
 
-    <h3>Mude para o Blocks:</h3>
-    <p>Clique no botão "Tirar foto" para tirar a foto. Enquanto salva as imagens, elas serão passadas do Canvas1 até o Canvas4. Clique na imagem para selecioná-la e depois em "Compartilhar" para enviar através do e-mail.</p>
+		<img src="fig5.jpg" alt="figura 5">
 
-    <img src="fig5.jpg" alt="figura 5">
+		<p>Tirando foto e salvando no Canvas Pegue o elemento que armazena números.</p>
+		<p>Cada foto é associada a um Canvas. A primeira foto vai para Canvas1, a segunda para o Canvas2 e assim por diante. Será usado um contador que é uma variável global para que foto seja atribuída a seu respectivo Canvas.</p>
+		<p>No menu dos blocks, procure por "Variables", arraste solte "Initilize global". Modifique o campo "name" para "CanvasNum".</p>
+		<p>Em Math → Pegue o elemento que armazena números.</p>
+		<img src="fig6.jpg" alt="figura 6">
 
-    <p>Tirando foto e salvando no Canvas Pegue o elemento que armazena números.</p>
-    <p>Cada foto é associada a um Canvas. A primeira foto vai para Canvas1, a segunda para o Canvas2 e assim por diante. Será usado um contador que é uma variável global para que foto seja atribuída a seu respectivo Canvas.</p>
-    <p>No menu dos blocks, procure por "Variables", arraste solte "Initilize global". Modifique o campo "name" para "CanvasNum".</p>
-    <p>Em Math → Pegue o elemento que armazena números.</p>
-    <img src="fig6.jpg" alt="figura 6">
+		<h3>Iniciando a câmera</h3>
+		<p>A mesma ação acontece ao clicar nos botões btnFoto e btnCamera. Os botões terão esta lógica:</p>
+		<img src="fig7.jpg" alt="figura 7" width="100%">
 
-    <h3>Iniciando a câmera</h3>
-    <p>A mesma ação acontece ao clicar nos botões btnFoto e btnCamera. Os botões terão esta lógica:</p>
-    <img src="fig7.jpg" alt="figura 7" width="100%">
+		<h3>Salvando as imagens como fundo</h3>
 
-    <h3>Salvando as imagens como fundo</h3>
+		<p>Arraste uma <b>procedure</b> destacada na cor vermelha para a área de blocos.</p>
+		<img src="fig8.jpg" alt="figura8">
 
-    <p>Arraste uma <b>procedure</b> destacada na cor vermelha para a área de blocos.</p>
-    <img src="fig8.jpg" alt="figura8">
+		<p>Clique no <b>mutator</b> (ícone da engrenagem) para arraste o elemento <b>input</b> para dentro do <b>inputs</b> como mostra a Figura 9. Altere o texto <bp>procedure</b> para <b>FotoParaCanvas</b>.</p>
+		<img src="fig9.jpg" alt="figura9">
 
-    <p>Clique no <b>mutator</b> (ícone da engrenagem) para arraste o elemento <b>input</b> para dentro do <b>inputs</b> como mostra a Figura 9. Altere o texto <bp>procedure</b> para <b>FotoParaCanvas</b>.</p>
-    <img src="fig9.jpg" alt="figura9">
+		<p>No bloco <b>Control</b> arraste o elemento de decisão indicado pela seta vermelha:</p>
+		<img src="fig10.jpg" alt="figura10">
 
-    <p>No bloco <b>Control</b> arraste o elemento de decisão indicado pela seta vermelha:</p>
-    <img src="fig10.jpg" alt="figura10">
+		<p>Clique no <b>mutator</b> (ícone da engrenagem) e altere a estrutura de decisão como mostra a Figura 11.</p>
+		<img src="fig11.jpg" alt="figura11">
 
-    <p>Clique no <b>mutator</b> (ícone da engrenagem) e altere a estrutura de decisão como mostra a Figura 11.</p>
-    <img src="fig11.jpg" alt="figura11">
+		<p>Arraste o elemento do bloco <b>Math</b> como indicado na Figura 12.</p>
+		<img src="fig12.jpg" alt="figura12">
 
-    <p>Arraste o elemento do bloco <b>Math</b> como indicado na Figura 12.</p>
-    <img src="fig12.jpg" alt="figura12">
+		<p>Faça as modificações para criar a procedure como mostra a Figura 13.</p>
+		<img src="fig13.jpg" alt="figura13">
 
-    <p>Faça as modificações para criar a procedure como mostra a Figura 13.</p>
-    <img src="fig13.jpg" alt="figura13">
+		<p>A procedure completa fica com a aparência da Figura 14.</p>
+		<img src="fig14.jpg" alt="figura14">
 
-    <p>A procedure completa fica com a aparência da Figura 14.</p>
-    <img src="fig14.jpg" alt="figura14">
+		<p>Reúna os elementos como mostra a Figura 15.</p>
+		<img src="fig15.jpg" alt="figura15">
 
-    <p>Reúna os elementos como mostra a Figura 15.</p>
-    <img src="fig15.jpg" alt="figura15">
+		<p>Arraste o bloco de evento <b>AfterPicture</b> como mostra a Figura 16.</p>
+		<img src="fig16.jpg" alt="figura16">
 
-    <p>Arraste o bloco de evento <b>AfterPicture</b> como mostra a Figura 16.</p>
-    <img src="fig16.jpg" alt="figura16">
+		<p>Faça como mostra a Figura 17 juntando o que foi feito nas Figura 15 e Figura 16.</p>
+		<img src="fig17.jpg" alt="figura17">
 
-    <p>Faça como mostra a Figura 17 juntando o que foi feito nas Figura 15 e Figura 16.</p>
-    <img src="fig17.jpg" alt="figura17">
+		<p>Execute o passo mostrado na Figura 18:</p>
+		<img src="fig18.jpg" alt="figura18" width="100%">
 
-    <p>Execute o passo mostrado na Figura 18:</p>
-    <img src="fig18.jpg" alt="figura18" width="100%">
+		<p>Faça como a Figura 19:</p>
+		<img src="fig19.jpg" alt="figura19" width="100%">
 
-    <p>Faça como a Figura 19:</p>
-    <img src="fig19.jpg" alt="figura19" width="100%">
-
-    <p>Última peça da procudure:</p>
-    <img src="fig20.jpg" alt="figura 20">
-
-    <p><br><p>
-	<p>Fonte: <a href="https://docs.google.com/document/d/1trt9smFfyiztdVoaq5ONaOM8GWOMoSFxTRJ7Eyyajuw/pub">Google Docs</a></p>
+		<p>Última peça da procedure:</p>
+		<img src="fig20.jpg" alt="figura 20">
+		
+		<p><br><p>
+		<p>Fonte: <a href="https://docs.google.com/document/d/1trt9smFfyiztdVoaq5ONaOM8GWOMoSFxTRJ7Eyyajuw/pub" target="_blank">Google Docs</a></p>
+	</div>
 </body>
 </html>
